@@ -34,7 +34,7 @@ return [
         'auth' => [
             'uname' => env('SMS_Faraz_uname'),
             'pass' => env('SMS_Faraz_pass'),
-            'from' => env('SMS_Faraz_from'),
+            'from' => "+100020400",
         ],
         'baseUri' => "https://ippanel.com/patterns/pattern?username=",
     ],
