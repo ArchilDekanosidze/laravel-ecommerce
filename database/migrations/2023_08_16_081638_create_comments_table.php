@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('commentable_type');
             $table->tinyInteger('seen')->default(0)->comment('0 => unseen, 1 => seen');
             $table->tinyInteger('approved')->default(0)->comment('0 => not approved, 1 => approved');
-            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

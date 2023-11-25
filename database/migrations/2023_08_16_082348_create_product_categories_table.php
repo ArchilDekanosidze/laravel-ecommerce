@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('slug')->unique()->nullable();
             $table->text('image')->nullable();
-            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->tinyInteger('show_in_menu')->default(0);
             $table->text('tags');
             $table->foreignId('parent_id')->nullable()->constrained('product_categories')->onUpdate('cascade')->onDelete('cascade');

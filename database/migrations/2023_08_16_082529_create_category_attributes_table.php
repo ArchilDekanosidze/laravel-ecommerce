@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('category_attributes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->tinyInteger('type')->default(0);
+            $table->tinyInteger('type')->default(1);
             $table->string('unit');
             $table->foreignId('category_id')->constrained('product_categories')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();

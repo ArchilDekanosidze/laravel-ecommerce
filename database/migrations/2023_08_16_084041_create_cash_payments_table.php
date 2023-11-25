@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->string('cash_receiver')->nullable();
             $table->timestamp('pay_date')->useCurrent();
-            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('body');
-            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->timestamp('published_at')->useCurrent();
             $table->timestamps();
             $table->softDeletes();

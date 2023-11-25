@@ -63,7 +63,7 @@ class TestController extends Controller
 
     public function tMongo()
     {
-
+        dd(phpinfo());
     }
 
 }

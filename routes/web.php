@@ -591,3 +591,4 @@ Route::get('/testEmail', [TestController::class, 'testEmail']);
 Route::get('/testSms', [TestController::class, 'testSms']);
 Route::get('/tlogout', [TestController::class, 'tlogout']);
 Route::get('/tredis/{id}', [TestController::class, 'tredis']);
+Route::get('/tMongo', [TestController::class, 'tMongo']);

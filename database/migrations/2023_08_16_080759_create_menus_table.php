@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('url');
-            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->foreignId('parent_id')->nullable()->constrained('menus');
             $table->timestamps();
             $table->softDeletes();

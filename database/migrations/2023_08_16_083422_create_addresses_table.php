@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('recipient_first_name');
             $table->string('recipient_last_name');
             $table->string('mobile');
-            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

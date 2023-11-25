@@ -18,7 +18,7 @@ return new class extends Migration
             $table->tinyInteger('amount_type')->default(0)->comment('0 => percentage, 1 => price unit');
             $table->unsignedBigInteger('discount_ceiling')->nullable();
             $table->tinyInteger('type')->default(0)->comment('0 => common (each user can use one time), 1 => private (one user can use one time)');
-            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->timestamp('start_date')->useCurrent();
             $table->timestamp('end_date')->useCurrent();
             $table->foreignId('user_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');

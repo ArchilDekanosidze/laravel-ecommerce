@@ -35,7 +35,7 @@
                         </section>
                     </section>
                     <!-- end vontent header -->
-                    @if(auth()->user()->compare->products()->count() > 0)
+                    @if(auth()->user()->compare()->count()>0 && auth()->user()->compare->products()->count() > 0)
                     <table class="table table-bordered">
                         <tbody>
                             <tr>

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('color_name');
             $table->foreignId('product_id')->constrained('products')->onUpdate('cascade')->onDelete('cascade');
             $table->decimal('price_increase', 20, 3)->default(0);
-            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->tinyInteger('sold_number')->default(0);
             $table->tinyInteger('frozen_number')->default(0);
             $table->tinyInteger('marketable_number')->default(0);

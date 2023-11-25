@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('percentage');
-            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->timestamp('start_date')->useCurrent();
             $table->timestamp('end_date')->useCurrent();
             $table->timestamps();

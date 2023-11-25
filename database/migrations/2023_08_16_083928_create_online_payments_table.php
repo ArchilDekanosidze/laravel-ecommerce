@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('transaction_id')->nullable();
             $table->text('bank_first_response')->nullable();
             $table->text('bank_second_response')->nullable();
-            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });
