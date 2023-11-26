@@ -9,7 +9,7 @@ use Laravel\Jetstream\Http\Livewire\ApiTokenManager;
 use Livewire\Livewire;
 use Tests\TestCase;
 
-class CreateApiTokenTest extends TestCase
+class CreateApiTokenTest1 extends TestCase
 {
     use RefreshDatabase;
 

@@ -9,7 +9,7 @@ use Laravel\Jetstream\Http\Livewire\UpdatePasswordForm;
 use Livewire\Livewire;
 use Tests\TestCase;
 
-class UpdatePasswordTest extends TestCase
+class UpdatePasswordTest1 extends TestCase
 {
     use RefreshDatabase;
 

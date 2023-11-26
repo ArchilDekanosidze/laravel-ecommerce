@@ -9,7 +9,7 @@ use Laravel\Jetstream\Http\Livewire\DeleteUserForm;
 use Livewire\Livewire;
 use Tests\TestCase;
 
-class DeleteAccountTest extends TestCase
+class DeleteAccountTest1 extends TestCase
 {
     use RefreshDatabase;
 

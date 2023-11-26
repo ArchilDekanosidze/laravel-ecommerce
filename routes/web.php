@@ -129,7 +129,6 @@ Route::prefix('auth')->name('auth.')->middleware('throttle:Medium')->group(funct
     Route::get('otp/profile/email/code', [ProfileEmailController::class, 'showEnterCodeForm'])->name('otp.profile.email.code.form');
     Route::post('otp/profile/email/code', [ProfileEmailController::class, 'confirmCode'])->name('otp.profile.email.code');
     Route::get('otp/profile/email/resend', [ProfileEmailController::class, 'resend'])->name('otp.profile.email.resend');
-
 });
 
 /*

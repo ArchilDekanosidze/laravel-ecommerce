@@ -8,7 +8,7 @@ use Laravel\Jetstream\Http\Livewire\LogoutOtherBrowserSessionsForm;
 use Livewire\Livewire;
 use Tests\TestCase;
 
-class BrowserSessionsTest extends TestCase
+class BrowserSessionsTest1 extends TestCase
 {
     use RefreshDatabase;
 
