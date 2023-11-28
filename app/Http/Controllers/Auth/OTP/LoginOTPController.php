@@ -12,5 +12,6 @@ class LoginOTPController extends Controller
     public function __construct(OTPLogin $otp)
     {
         $this->otp = $otp;
+        $this->middleware('guest');
     }
 }

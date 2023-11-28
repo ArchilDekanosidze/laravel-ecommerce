@@ -74,7 +74,8 @@ class LoginController extends Controller
 
         $user = $this->getUser($request);
 
-        if ($user->hasTwoFactor()) {
+        
+        if ($user->hasTwoFactor()) {           
             $response = $this->otp->requestCode();
             return $response == $this->otp::CODE_SENT
             ? $this->SendTokenSuccessResponse()

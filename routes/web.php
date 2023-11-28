@@ -87,11 +87,14 @@ Route::prefix('auth')->name('auth.')->middleware('throttle:Medium')->group(funct
     Route::get('otp/login/two-factor/code', [LoginTwoFactorController::class, 'showEnterCodeForm'])->name('otp.login.two.factor.code.form');
     Route::post('otp/login/two-factor/code', [LoginTwoFactorController::class, 'confirmCode'])->name('otp.login.two.factor.code');
     Route::get('otp/login/two-factor/resend', [LoginTwoFactorController::class, 'resend'])->name('otp.login.two.factor.resend');
+    
+    /********** */
     Route::get('otp/login', [LoginOTPController::class, 'showOTPForm'])->name('otp.login.form');
     Route::post('otp/login', [LoginOTPController::class, 'sendToken'])->name('otp.login.send.token');
     Route::get('otp/login/code', [LoginOTPController::class, 'showEnterCodeForm'])->name('otp.login.code.form');
     Route::post('otp/login/code', [LoginOTPController::class, 'confirmCode'])->name('otp.login.code');
     Route::get('otp/login/resend', [LoginOTPController::class, 'resend'])->name('otp.login.resend');
+    /************* */
     Route::get('register', [RegisterController::class, 'ShowRegisterationForm'])->name('register.form');
     Route::post('register', [RegisterController::class, 'Register'])->name('register');
     Route::get('otp/register', [RegisterOTPController::class, 'showOTPForm'])->name('otp.register.form');

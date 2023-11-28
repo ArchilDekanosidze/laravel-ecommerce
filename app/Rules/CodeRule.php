@@ -17,7 +17,7 @@ class CodeRule implements ValidationRule
     {
         $validator = Validator::make([$attribute => $value], [$attribute => ['required', 'numeric', 'digits:4']]);
         if ($validator->fails()) {
-            $fail('failed');
+            $fail('code is invalid.');
         }
     }
 }

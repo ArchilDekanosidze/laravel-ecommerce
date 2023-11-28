@@ -73,17 +73,17 @@ trait hasOTP
     public function resend()
     {
         $this->otp->resend();
-        return back()->with('success', __('public.Code Resent'));
+        return back()->with('success', __('auth.Code Resent'));
     }
 
     protected function SendTokenSuccessResponse()
     {
-        return redirect()->route('auth.otp.login.code.form')->with('success', 'code sent');
+        return redirect()->route('auth.otp.login.code.form')->with('success', __('auth.Code Sent'));
     }
 
     protected function SendTokenFailedResponse()
     {
-        return back()->withErrors(['cantSendCode' => 'cant Send Code']);
+        return back()->withErrors(['cantSendCode' => __('auth.cant Send Code')]);
     }
 
     protected function SendConfirmCodeSuccessResponse()
@@ -94,6 +94,6 @@ trait hasOTP
 
     protected function SendConfirmCodeFailedResponse()
     {
-        return back()->withErrors(['invalidCode' => 'code is invalid']);
+        return back()->withErrors(['invalidCode' => __('validation.code is invalid.')]);
     }
 }

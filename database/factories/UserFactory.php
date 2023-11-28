@@ -42,18 +42,36 @@ class UserFactory extends Factory
             'activation_date' => now(),
             'user_type' => 0,
             'status' => 1,
-            'remember_token' => Str::random(10),
+            'remember_token' => null,
         ];
     }
 
     /**
      * Indicate that the model's email address should be unverified.
      */
-    public function unverified(): static
+    public function unverifiedEmail(): static
     {
         return $this->state(function (array $attributes) {
             return [
                 'email_verified_at' => null,
+            ];
+        });
+    }
+
+    public function unverifiedMobile(): static
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'mobile_verified_at' => null,
+            ];
+        });
+    }
+
+    public function hasTwoFactor(): static
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'has_two_factor' => 1,
             ];
         });
     }

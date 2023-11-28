@@ -16,6 +16,19 @@ return [
     'failed' => 'These credentials do not match our records.',
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many attempts. Please try again in :seconds seconds.',
-    'enter your password' => 'enter your password'
+    'enter your password' => 'enter your password',
+    // hasUsername
+    'your username is not an email or phone number' => 'your username is not an email or phone number',
+    'wrong Credentials' => 'wrong Credentials',
+    'user already exists' => 'user already exists',
+    'There is another user with this mobile number. please select a different username' => 'There is another user with this mobile number. please select a different username',
+    'There is another user with this email. please select a different username' => 'There is another user with this email. please select a different username',
+    'Your mobile number is not valid' => 'Your mobile number is not valid',
+    'Your email is not valid' => 'Your email is not valid',
+    // hasOTP
+    'Code Resent' => 'Code Resent',
+    'cant Send Code' => 'cant Send Code',
+    'Code Sent' => 'Code Sent',
+
 
 ];
