@@ -23,12 +23,6 @@
                                  placeholder="@lang('public.enter your email or phone number')">
                         </div>
                     </div>
-                    <div class="form-group row mb-lg-2">
-                        <div class="form-check offset-sm-3">
-                            <input type="checkbox" class="form-check-input" name="remember" id="remember">
-                            <label class="form-check-label" for="remember"><small>@lang('public.remember me')</small></label>
-                        </div>
-                    </div>
                     <div class="col-sm-9 offset-sm-3">
                         @error('Credentials')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">

@@ -22,6 +22,11 @@ class ForgotPasswordController extends Controller
 
     use SendsPasswordResetEmails;
 
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
+
     public function showForgetForm()
     {
         return view('auth.forget-password');
@@ -32,9 +37,9 @@ class ForgotPasswordController extends Controller
         $this->validateForm($request);
         $resposne = Password::broker()->sendResetLink($request->only('email'));
         if ($resposne == Password::RESET_LINK_SENT) {
-            return back()->with('success', 'resetLinkSent');
+            return back()->with('success', __('auth.resetLinkSent'));
         }
-        return back()->withErrors(['resetLinkFailed', 'reset Link Failed']);
+        return back()->withErrors(['resetLinkFailed', __('auth.reset Link Failed')]);
     }
     protected function validateForm($request)
     {

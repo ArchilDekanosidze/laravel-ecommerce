@@ -17,7 +17,7 @@ class PasswordRule implements ValidationRule
     {
         $validator = Validator::make([$attribute => $value], [$attribute => ['required', 'string', 'min:8']]);
         if ($validator->fails()) {
-            $fail('password is not valid');
+            $fail(__('validation.password is not valid'));
         }
     }
 }

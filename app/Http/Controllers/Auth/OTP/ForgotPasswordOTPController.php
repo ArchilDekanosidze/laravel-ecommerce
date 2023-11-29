@@ -26,6 +26,7 @@ class ForgotPasswordOTPController extends Controller
     public function __construct(OTPResetPassword $otp)
     {
         $this->otp = $otp;
+        $this->middleware('guest');
     }
 
     public function showOTPForm()
@@ -35,7 +36,7 @@ class ForgotPasswordOTPController extends Controller
 
     protected function SendTokenSuccessResponse()
     {
-        return redirect()->route('auth.otp.password.code.form')->with('success', 'code sent');
+        return redirect()->route('auth.otp.password.code.form')->with('success', __('auth.Code Sent'));
     }
 
 }

@@ -169,6 +169,8 @@ return [
     ],
 
     'code is invalid.' => 'code is invalid.',
+    'password is not valid' => 'password is not valid',
+    'username already exist or is invalid' => 'wrong username(username already exist or is invalid)',
 
     
     /*

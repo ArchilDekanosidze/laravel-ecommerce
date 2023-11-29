@@ -72,7 +72,7 @@ class RegisterController extends Controller
     protected function validateForm(Request $request)
     {
         $request->validate([
-            'username' => ['required', 'string'],
+            'username' => ['required'],
             'password' => ['confirmed', new PasswordRule()],
         ]);
     }
@@ -104,6 +104,6 @@ class RegisterController extends Controller
     protected function SendRegisterSuccessResponse()
     {
         session()->regenerate();
-        return redirect()->route('customer.home')->with('success', 'Please verify your email');
+        return redirect($this->redirectTo)->with('success', 'Please verify your email');
     }
 }

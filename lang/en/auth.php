@@ -29,6 +29,8 @@ return [
     'Code Resent' => 'Code Resent',
     'cant Send Code' => 'cant Send Code',
     'Code Sent' => 'Code Sent',
+    'resetLinkSent' => 'resetLinkSent',
+    'reset Link Failed' => 'reset Link Failed',
 
 
 ];

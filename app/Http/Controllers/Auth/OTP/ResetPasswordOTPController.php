@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Auth\OTP;
 
-use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
+use App\Rules\CodeRule;
 use App\Rules\PasswordRule;
-use App\Services\Auth\OTPResetPassword;
-use App\Services\Auth\Traits\hasOTP;
-use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Services\Auth\Traits\hasOTP;
+use App\Providers\RouteServiceProvider;
+use App\Services\Auth\OTPResetPassword;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Foundation\Auth\ResetsPasswords;
 
 class ResetPasswordOTPController extends Controller
 {
@@ -36,6 +37,7 @@ class ResetPasswordOTPController extends Controller
     public function __construct(OTPResetPassword $otp)
     {
         $this->otp = $otp;
+        $this->middleware('guest');
     }
 
     public function showEnterCodeForm(Request $request)
@@ -46,7 +48,8 @@ class ResetPasswordOTPController extends Controller
     protected function validateCodeForm($request)
     {
         $request->validate([
-            'username' => ['required', 'string', 'max:255'],
+            'code' => new CodeRule(),
+            'username' => ['required'],
             'password' => ['confirmed', new PasswordRule()],
         ]);
     }

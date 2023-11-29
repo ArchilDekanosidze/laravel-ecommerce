@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Controllers\Auth;
+namespace Tests\Feature\Controllers\Auth\OTP;
 
 use App\Models\Otp;
 use Tests\TestCase;
