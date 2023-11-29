@@ -34,6 +34,9 @@ return [
     'passwordChanged' => 'password Changed',
     'cant Change Password' => 'cant Change Password',
     'verification Email Sent' => 'verification Email Sent',
-
+    'Two Factor Activated' => 'Two Factor Activated',
+    'Your mobile number changed succeefully' => 'Your mobile number changed succeefully',
+    'Your email changed succeefully' => 'Your email changed succeefully',
+    
 
 ];

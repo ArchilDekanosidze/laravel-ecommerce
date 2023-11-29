@@ -39,7 +39,7 @@ class ProfileEmailController extends Controller
 
     protected function SendTokenSuccessResponse()
     {
-        return redirect()->route('auth.otp.profile.email.code')->with('success', 'code sent');
+        return redirect()->route('auth.otp.profile.email.code')->with('success', __('auth.Code Sent'));
     }
 
     public function showEnterCodeForm()
@@ -49,7 +49,7 @@ class ProfileEmailController extends Controller
 
     protected function SendConfirmCodeSuccessResponse()
     {
-        return redirect()->route('customer.profiles.profile')->with('success', 'Your email changed succeefully');
+        return redirect()->route('customer.profiles.profile')->with('success', __('auth.Your email changed succeefully'));
     }
 
     public function showOTPForm()

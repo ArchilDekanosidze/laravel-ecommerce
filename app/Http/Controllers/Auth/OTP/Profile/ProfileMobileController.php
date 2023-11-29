@@ -40,7 +40,7 @@ class ProfileMobileController extends Controller
 
     protected function SendTokenSuccessResponse()
     {
-        return redirect()->route('auth.otp.profile.mobile.code')->with('success', 'code sent');
+        return redirect()->route('auth.otp.profile.mobile.code')->with('success', __('auth.Code Sent'));
     }
 
     public function showEnterCodeForm()
@@ -50,7 +50,7 @@ class ProfileMobileController extends Controller
 
     protected function SendConfirmCodeSuccessResponse()
     {
-        return redirect()->route('customer.profiles.profile')->with('success', 'Your mobile number changed succeefully');
+        return redirect()->route('customer.profiles.profile')->with('success', __('auth.Your mobile number changed succeefully'));
     }
 
     public function showOTPForm()

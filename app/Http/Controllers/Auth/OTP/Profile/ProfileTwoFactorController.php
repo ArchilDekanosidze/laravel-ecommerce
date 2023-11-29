@@ -49,7 +49,7 @@ class ProfileTwoFactorController extends Controller
 
     protected function SendTokenSuccessResponse()
     {
-        return redirect()->route('auth.otp.profile.two.factor.code.form')->with('success', 'code sent');
+        return redirect()->route('auth.otp.profile.two.factor.code.form')->with('success', __('auth.Code Sent'));
     }
 
     public function showEnterCodeForm()
@@ -71,6 +71,6 @@ class ProfileTwoFactorController extends Controller
     protected function SendConfirmCodeSuccessResponse()
     {
         session()->regenerate();
-        return redirect()->route('auth.otp.profile.two.factor.toggle.form')->with('success', 'Two Factor Activated');
+        return redirect()->route('auth.otp.profile.two.factor.toggle.form')->with('success', __('auth.Two Factor Activated'));
     }
 }

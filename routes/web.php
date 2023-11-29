@@ -112,7 +112,6 @@ Route::prefix('auth')->name('auth.')->middleware('throttle:Medium')->group(funct
     Route::get('otp/password/resend', [ResetPasswordOTPController::class, 'resend'])->name('otp.password.resend');
     Route::get('email/send-verification', [VerificationController::class, 'send'])->name('email.send.verification');
     Route::get('email/verify', [VerificationController::class, 'verify'])->name('email.verify');
-            /********** */
     Route::get('otp/profile/two-factor/toggle', [ProfileTwoFactorController::class, 'showToggleForm'])->name('otp.profile.two.factor.toggle.form');
     Route::get('otp/profile/two-factor/activateByEmail', [ProfileTwoFactorController::class, 'sendTokenForEmail'])->name('otp.profile.two.factor.sendTokenForEmail');
     Route::get('otp/profile/two-factor/activateByMobile', [ProfileTwoFactorController::class, 'sendTokenForMobile'])->name('otp.profile.two.factor.sendTokenForMobile');

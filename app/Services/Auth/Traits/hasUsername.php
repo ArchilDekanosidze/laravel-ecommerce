@@ -15,7 +15,7 @@ trait hasUsername
     public function isUsernameAnMobile($username)
     {
         $username = ltrim($username, '+');
-        return preg_match('/[0-9]+$/', $username);
+        return preg_match('/^\d+$/', $username);
     }
  
     public function isUsernameValid($username)
