@@ -49,7 +49,7 @@ class VerificationController extends Controller
         }
 
         Auth::user()->sendEmailVerificationNotification();
-        return back()->with('success', 'verification Email Sent');
+        return back()->with('success', __('auth.verification Email Sent'));
     }
 
     public function verify(Request $request)

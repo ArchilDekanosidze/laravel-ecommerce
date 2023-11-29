@@ -31,6 +31,9 @@ return [
     'Code Sent' => 'Code Sent',
     'resetLinkSent' => 'resetLinkSent',
     'reset Link Failed' => 'reset Link Failed',
+    'passwordChanged' => 'password Changed',
+    'cant Change Password' => 'cant Change Password',
+    'verification Email Sent' => 'verification Email Sent',
 
 
 ];

@@ -99,25 +99,17 @@ Route::prefix('auth')->name('auth.')->middleware('throttle:Medium')->group(funct
     Route::get('otp/register/code', [RegisterOTPController::class, 'showEnterCodeForm'])->name('otp.register.code.form');
     Route::post('otp/register/code', [RegisterOTPController::class, 'confirmCode'])->name('otp.register.code');
     Route::get('otp/register/resend', [RegisterOTPController::class, 'resend'])->name('otp.register.resend');
-    /************* */
     Route::get('redirect/{provider}', [SocialController::class, 'RredirectToProvider'])->name('login.provider.redirect');
     Route::get('{provider}/callback', [SocialController::class, 'providerCallback'])->name('login.provider.callback');
-    /************* */
     Route::get('password/forget', [ForgotPasswordController::class, 'showForgetForm'])->name('password.forget.form');
     Route::post('password/forget', [ForgotPasswordController::class, 'sendResetLink'])->name('password.forget');
-    /********** */
     Route::get('otp/password/forget', [ForgotPasswordOTPController::class, 'showOTPForm'])->name('otp.password.forget.form');
     Route::post('otp/password/forget', [ForgotPasswordOTPController::class, 'sendToken'])->name('otp.password.send.token');
-        /********** */
     Route::get('password/reset', [ResetPasswordController::class, 'showResetForm'])->name('password.reset.form');
     Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.reset');
-            /********** */
-
     Route::get('otp/password/reset', [ResetPasswordOTPController::class, 'showEnterCodeForm'])->name('otp.password.code.form');
     Route::post('otp/password/reset', [ResetPasswordOTPController::class, 'confirmCode'])->name('otp.password.code');
     Route::get('otp/password/resend', [ResetPasswordOTPController::class, 'resend'])->name('otp.password.resend');
-        /********** */
-
     Route::get('email/send-verification', [VerificationController::class, 'send'])->name('email.send.verification');
     Route::get('email/verify', [VerificationController::class, 'verify'])->name('email.verify');
             /********** */

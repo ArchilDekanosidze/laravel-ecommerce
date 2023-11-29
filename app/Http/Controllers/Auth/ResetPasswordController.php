@@ -31,6 +31,11 @@ class ResetPasswordController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
+
     public function showResetForm(Request $request)
     {
         return view('auth.reset-password', [
@@ -41,7 +46,6 @@ class ResetPasswordController extends Controller
 
     public function reset(Request $request)
     {
-
         $this->validateForm($request);
         $response = Password::broker()->reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
@@ -51,9 +55,9 @@ class ResetPasswordController extends Controller
             }
         );
         if ($response == Password::PASSWORD_RESET) {
-            return redirect()->route('auth.login')->with('success', 'passwordChanged');
+            return redirect()->route('auth.login')->with('success', __('auth.passwordChanged'));
         } else {
-            return back()->withErrors(['cantChangePassword' => 'cant Change Password']);
+            return back()->withErrors(['cantChangePassword' => __('auth.cant Change Password')]);
         }
     }
     protected function validateForm($request)
