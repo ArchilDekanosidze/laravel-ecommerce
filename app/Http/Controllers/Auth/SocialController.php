@@ -31,7 +31,7 @@ class SocialController extends Controller
     protected function findOrCreateUser($user, $driver)
     {
         $providerUser = User::where([
-            'email' => $user->getEmail(),
+            'email' => $user['email'],
         ])->first();
 
         if (!is_null($providerUser)) {
@@ -39,8 +39,8 @@ class SocialController extends Controller
         }
 
         $user = User::create([
-            'email' => $user->getEmail(),
-            'name' => $user->getName(),
+            'email' => $user['email'],
+            'name' => $user['name'],
         ]);
         $user->email_verified_at = now();
         $user->save();
