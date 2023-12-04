@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\Notification\Sms;
 
 use App\Services\Notification\Sms\Contracts\SmsSender;
@@ -20,5 +21,4 @@ class SmsWithNumberProvider
         $result = $smsProvider->send();
         return $result;
     }
-
 }

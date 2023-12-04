@@ -14,7 +14,7 @@ use Laravel\Jetstream\Features;
  */
 class UserFactory extends Factory
 {
-    
+
     /**
      * Define the model's default state.
      *
@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'mobile' => $this->faker->numerify('##########'),
             'has_two_factor' => 0,
-            'password' =>Hash::make(1234),
+            'password' => Hash::make(1234),
             'social_security_number' => $this->faker->ssn,
             'first_name' => $first_name,
             'last_name' => $last_name,
@@ -75,7 +75,4 @@ class UserFactory extends Factory
             ];
         });
     }
-   
 }
-
-

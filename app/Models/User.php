@@ -3,28 +3,29 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Jobs\Notification\Email\SendEmail;
-use App\Mail\ResetPassword;
-use App\Mail\VerificationEmail;
 use App\Models\Address;
-use App\Models\Market\Compare;
+use App\Models\User\Role;
+use App\Mail\ResetPassword;
 use App\Models\Market\Order;
-use App\Models\Market\OrderItem;
+use App\Models\Ticket\Ticket;
+use App\Models\Market\Compare;
 use App\Models\Market\Payment;
 use App\Models\Market\Product;
-use App\Models\Ticket\Ticket;
+use App\Mail\VerificationEmail;
+use App\Models\Market\OrderItem;
+use Laravel\Sanctum\HasApiTokens;
 use App\Models\Ticket\TicketAdmin;
-use App\Models\User\Role;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Jetstream\HasProfilePhoto;
+use Nagy\LaravelRating\Traits\CanRate;
+use Illuminate\Notifications\Notifiable;
+use App\Jobs\Notification\Email\SendEmail;
 use App\Services\Auth\Traits\HasTwoFactor;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 use App\Services\Auth\Traits\MustVerifyMobile;
 use App\Traits\Permissions\HasPermissionsTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Sanctum\HasApiTokens;
-use Nagy\LaravelRating\Traits\CanRate;
 
 class User extends Authenticatable
 {

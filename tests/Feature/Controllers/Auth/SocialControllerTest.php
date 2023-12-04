@@ -2,19 +2,45 @@
 
 namespace Tests\Feature\Controllers\Auth;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\User;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SocialControllerTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function test_example(): void
-    {
-        $response = $this->get('/');
+    //auth.login.provider.redirect
 
-        $response->assertStatus(200);
+    public function test_can_socialite_rredirectToProvider_unAuthenticated_users(): void
+    {
+        $driver = 'google';
+        $response = $this->get(route('auth.login.provider.redirect', ['provider' => $driver]));
+
+        $response->assertStatus(302);
+    }
+
+    public function test_can_redirect_socialite_redirectToProvider_for_Authenticated_users(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        $driver = 'google';
+
+        $response = $this->get(route('auth.login.provider.redirect', ['provider' => $driver]));
+
+        $response->assertRedirect(RouteServiceProvider::HOME);
+    }
+
+    //auth.login.provider.callback
+
+    public function test_can_redirect_socialite_callback_for_Authenticated_users(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        $driver = 'google';
+
+        $response = $this->get(route('auth.login.provider.callback', ['provider' => $driver]));
+
+        $response->assertRedirect(RouteServiceProvider::HOME);
     }
 }

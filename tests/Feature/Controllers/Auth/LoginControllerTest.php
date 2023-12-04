@@ -16,13 +16,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LoginControllerTest extends TestCase
 {
-    
+    //auth.login.form
+
     public function test_can_show_login_form_for_unAuthenticated_users(): void
     {
         $response = $this->get(route('auth.login.form'));
 
         $response->assertStatus(200);
-    }        
+    }
 
     public function test_can_redirect_login_form_for_Authenticated_users(): void
     {
@@ -32,7 +33,32 @@ class LoginControllerTest extends TestCase
         $response = $this->get(route('auth.login.form'));
 
         $response->assertRedirect(RouteServiceProvider::HOME);
-    }    
+    }
+
+    // auth.login
+
+    public function test_can_login_method_for_unAuthenticated_users(): void
+    {
+        $user = User::factory()->create();
+        $response = $this->post(route('auth.login'), [
+            'username' => $user->email,
+            'password' => 1234,
+        ]);
+        $response->assertStatus(302);
+        $this->assertAuthenticated();
+    }
+
+    public function test_redirect_login_method_for_Authenticated_users(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->post(route('auth.login'), [
+            'username' => $user->email,
+            'password' => 1234,
+        ]);
+        $response->assertRedirect(RouteServiceProvider::HOME);
+    }
 
     public function test_validate_required_username(): void
     {
@@ -44,7 +70,7 @@ class LoginControllerTest extends TestCase
         ]);
         $response->assertSessionHasErrors(['username' => __('validation.required', ['attribute' => 'username'])]);
         $this->assertGuest();
-    }   
+    }
 
     public function test_validate_required_password(): void
     {
@@ -57,7 +83,7 @@ class LoginControllerTest extends TestCase
 
         $response->assertSessionHasErrors(['password' => __('validation.required', ['attribute' => 'password'])]);
         $this->assertGuest();
-    }        
+    }
 
     public function test_validate_fail_username_is_not_email_or_phoneNumber(): void
     {
@@ -67,7 +93,7 @@ class LoginControllerTest extends TestCase
         ]);
         $response->assertSessionHasErrors(['username' => __('auth.your username is not an email or phone number')]);
         $this->assertGuest();
-    }     
+    }
 
     public function test_validate_success_username_is_an_email(): void
     {
@@ -87,14 +113,14 @@ class LoginControllerTest extends TestCase
         ]);
         $response->assertSessionDoesntHaveErrors(['username' => __('auth.your username is not an email or phone number')]);
         $this->assertGuest();
-    }             
-    
+    }
+
     public function test_lock_out_response(): void
     {
         $loginController = new LoginController(new OTPLogin(new Request));
-        
+
         $maxAttempts = $loginController->maxAttempts();
-        for ($i=0; $i < $maxAttempts; $i++) { 
+        for ($i = 0; $i < $maxAttempts; $i++) {
             $response = $this->post(route('auth.login'), [
                 'username' => 'test@gmail.com',
                 'password' => 'password',
@@ -108,7 +134,7 @@ class LoginControllerTest extends TestCase
 
         $response->assertSessionHasErrors(['throttle']);
     }
-   
+
     public function test_lock_out_response_sleep_time(): void
     {
         $loginController = new LoginController(new OTPLogin(new Request));
@@ -116,7 +142,7 @@ class LoginControllerTest extends TestCase
         $decayMinutes = $loginController->decayMinutes();
 
 
-        for ($i=0; $i < $maxAttempts; $i++) { 
+        for ($i = 0; $i < $maxAttempts; $i++) {
             $response = $this->post(route('auth.login'), [
                 'username' => 'test@gmail.com',
                 'password' => 'password',
@@ -148,7 +174,7 @@ class LoginControllerTest extends TestCase
         $response->assertSessionHasErrors(['Credentials' => __('auth.wrong Credentials')]);
         $this->assertGuest();
     }
-    
+
     public function test_login_user_if_user_dosent_have_two_factor(): void
     {
         $user = User::factory()->create();
@@ -194,9 +220,9 @@ class LoginControllerTest extends TestCase
             'password' => 1234,
         ]);
         $code = Otp::findOrFail(session('code_id'));
-        $this->assertEquals( $user->email, session('username'));
+        $this->assertEquals($user->email, session('username'));
         $this->assertNotNull($code);
-    } 
+    }
 
     public function test_redirect_user_to_two_factor_form_if_user_has_two_factor(): void
     {
@@ -207,16 +233,24 @@ class LoginControllerTest extends TestCase
             'password' => 1234,
         ]);
         $response->assertRedirect(route('auth.otp.login.two.factor.code.form'));
-        $this->assertGuest();                                                        
-    } 
-    
-    public function test_if_user_can_logout(): void
+        $this->assertGuest();
+    }
+
+    // auth.logout
+    public function test_can_logout_for_unAuthenticated_users(): void
     {
-        $user = User::factory()->hasTwoFactor()->create();
+        $response = $this->get(route('auth.logout'));
+
+        $response->assertRedirect(RouteServiceProvider::HOME);
+    }
+
+    public function test_if_user_can_logout_for_authenticated_user(): void
+    {
+        $user = User::factory()->create();
         $this->actingAs($user);
-  
+
         $response = $this->get(route('auth.logout'));
         $this->assertGuest();
         $response->assertRedirect(RouteServiceProvider::HOME);
-    }        
+    }
 }

@@ -2,14 +2,15 @@
 
 namespace App\Providers;
 
+use App\Models\Notification;
+use Laravel\Sanctum\Sanctum;
 use App\Models\Content\Comment;
 use App\Models\Market\CartItem;
-use App\Models\Notification;
-use App\Services\Notification\Sms\Contracts\SmsSender;
-use App\Services\Notification\Sms\Providers\FarazSms\FarazSms;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Foundation\Application;
+use App\Services\Notification\Sms\Contracts\SmsSender;
+use App\Services\Notification\Sms\Providers\FarazSms\FarazSms;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        Sanctum::ignoreMigrations();
     }
 
     /**

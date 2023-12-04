@@ -17,7 +17,7 @@ class ResetPassword extends Mailable
     private $user;
     private $token;
 
-    public function __construct(User $user , string $token)
+    public function __construct(User $user, string $token)
     {
         $this->user = $user;
         $this->token = $token;
@@ -59,7 +59,6 @@ class ResetPassword extends Mailable
 
     protected function generateLink()
     {
-        return route('auth.password.reset.form',['token'=>$this->token,'email'=>$this->user->email]);
+        return route('auth.password.reset.form', ['token' => $this->token, 'email' => $this->user->email]);
     }
-
 }

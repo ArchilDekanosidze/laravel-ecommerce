@@ -33,11 +33,11 @@ class Otp extends Model
                 'type' => SmsTypes::OTP_CODE,
                 'variables' => ['verificationCode' => $this->code],
             ];
-            // SendSmsWithNumber::dispatch($username, $data);
+            SendSmsWithNumber::dispatch($username, $data);
         }
         if ($this->isUsernameAnEmail($username)) {
             $mailable = new OTPCode($this->code);
-            // SendEmailWithMailAddress::dispatch($username, $mailable);
+            SendEmailWithMailAddress::dispatch($username, $mailable);
         }
     }
 

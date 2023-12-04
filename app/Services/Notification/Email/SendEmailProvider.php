@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\Notification\Email;
 
 use App\Models\User;

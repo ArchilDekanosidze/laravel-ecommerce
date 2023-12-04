@@ -9,6 +9,11 @@ use Laravel\Socialite\Facades\Socialite;
 
 class SocialController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
+
     public function RredirectToProvider($driver)
     {
         return Socialite::driver($driver)->redirect();
@@ -40,7 +45,5 @@ class SocialController extends Controller
         $user->email_verified_at = now();
         $user->save();
         return $user;
-
     }
-
 }
