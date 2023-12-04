@@ -57,6 +57,8 @@ class ResetPasswordControllerTest extends TestCase
 
     public function test_validate_required_email(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.password.forget'), [
@@ -71,12 +73,14 @@ class ResetPasswordControllerTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors(['email' => __('validation.required', ['attribute' => 'email'])]);
-
         $this->assertGuest();
+        Queue::assertPushed(SendEmail::class);
     }
 
     public function test_validate_string_email(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.password.forget'), [
@@ -93,10 +97,13 @@ class ResetPasswordControllerTest extends TestCase
         $response->assertSessionHasErrors(['email' => __('validation.string', ['attribute' => 'email'])]);
 
         $this->assertGuest();
+        Queue::assertPushed(SendEmail::class);
     }
 
     public function test_validate_should_be_email(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.password.forget'), [
@@ -113,10 +120,13 @@ class ResetPasswordControllerTest extends TestCase
         $response->assertSessionHasErrors(['email' => __('validation.email', ['attribute' => 'email'])]);
 
         $this->assertGuest();
+        Queue::assertPushed(SendEmail::class);
     }
 
     public function test_validate_max_255_email(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.password.forget'), [
@@ -133,10 +143,13 @@ class ResetPasswordControllerTest extends TestCase
         $response->assertSessionHasErrors(['email' => __('validation.max.string', ['attribute' => 'email', 'max' => 255])]);
 
         $this->assertGuest();
+        Queue::assertPushed(SendEmail::class);
     }
 
     public function test_validate_should_exists_email(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
         $username = fake()->safeEmail();
 
@@ -154,10 +167,12 @@ class ResetPasswordControllerTest extends TestCase
         $response->assertSessionHasErrors(['email' => __('validation.exists', ['attribute' => 'email'])]);
 
         $this->assertGuest();
+        Queue::assertPushed(SendEmail::class);
     }
 
     public function test_validate_confirmed_password(): void
     {
+        Queue::fake();
 
         $user = User::factory()->create();
 
@@ -174,10 +189,13 @@ class ResetPasswordControllerTest extends TestCase
 
         $response->assertSessionHasErrors(['password' => __('validation.confirmed', ['attribute' => 'password'])]);
         $this->assertGuest();
+        Queue::assertPushed(SendEmail::class);
     }
 
     public function test_validate_required_password(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.password.forget'), [
@@ -194,10 +212,13 @@ class ResetPasswordControllerTest extends TestCase
 
         $response->assertSessionHasErrors(['password' => __('validation.password is not valid')]);
         $this->assertGuest();
+        Queue::assertPushed(SendEmail::class);
     }
 
     public function test_validate_string_password(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.password.forget'), [
@@ -213,10 +234,13 @@ class ResetPasswordControllerTest extends TestCase
 
         $response->assertSessionHasErrors(['password' => __('validation.password is not valid')]);
         $this->assertGuest();
+        Queue::assertPushed(SendEmail::class);
     }
 
     public function test_validate_min_eight_password(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.password.forget'), [
@@ -232,10 +256,13 @@ class ResetPasswordControllerTest extends TestCase
 
         $response->assertSessionHasErrors(['password' => __('validation.password is not valid')]);
         $this->assertGuest();
+        Queue::assertPushed(SendEmail::class);
     }
 
     public function test_validate_required_token(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.password.forget'), [
@@ -249,13 +276,15 @@ class ResetPasswordControllerTest extends TestCase
             'token' => '',
         ]);
 
-
         $response->assertSessionHasErrors(['token' => __('validation.required', ['attribute' => 'token'])]);
         $this->assertGuest();
+        Queue::assertPushed(SendEmail::class);
     }
 
     public function test_validate_string_token(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.password.forget'), [
@@ -271,9 +300,12 @@ class ResetPasswordControllerTest extends TestCase
 
         $response->assertSessionHasErrors(['token' => __('validation.string', ['attribute' => 'token'])]);
         $this->assertGuest();
+        Queue::assertPushed(SendEmail::class);
     }
     public function test_is_token_not_valid(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.password.forget'), [
@@ -288,5 +320,6 @@ class ResetPasswordControllerTest extends TestCase
         ]);
         $response->assertSessionHasErrors(['cantChangePassword' => __('auth.cant Change Password')]);
         $this->assertGuest();
+        Queue::assertPushed(SendEmail::class);
     }
 }

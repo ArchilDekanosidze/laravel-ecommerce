@@ -8,6 +8,10 @@ use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
+use App\Jobs\Notification\Email\SendEmailWithMailAddress;
+
+
 
 class ForgotPasswordOTPControllerTest extends TestCase
 {
@@ -37,18 +41,18 @@ class ForgotPasswordOTPControllerTest extends TestCase
 
         $response->assertSessionHasErrors(['username' => __('validation.required', ['attribute' => 'username'])]);
         $this->assertGuest();
-    }  
+    }
 
     public function test_validate_email_exits(): void
     {
         $username = fake()->safeEmail();
 
         $response = $this->post(route('auth.otp.password.send.token'), [
-            'username' => $username ,
+            'username' => $username,
         ]);
         $response->assertSessionHasErrors(['Credentials' => __('auth.wrong Credentials')]);
         $this->assertGuest();
-    } 
+    }
 
     public function test_validate_mobile_exits(): void
     {
@@ -59,7 +63,7 @@ class ForgotPasswordOTPControllerTest extends TestCase
         ]);
         $response->assertSessionHasErrors(['Credentials' => __('auth.wrong Credentials')]);
         $this->assertGuest();
-    } 
+    }
 
     public function test_if_code_set_in_session_for_user_by_email(): void
     {
@@ -67,12 +71,12 @@ class ForgotPasswordOTPControllerTest extends TestCase
         $response = $this->post(route('auth.otp.password.send.token'), [
             'username' => $user->email
         ]);
-        
+
         $code = Otp::findOrFail(session('code_id'));
-        
-        $this->assertEquals( $user->email , session('username'));
+
+        $this->assertEquals($user->email, session('username'));
         $this->assertNotNull($code);
-    } 
+    }
 
     public function test_if_code_set_in_session_for_user_by_mobile(): void
     {
@@ -80,10 +84,10 @@ class ForgotPasswordOTPControllerTest extends TestCase
         $response = $this->post(route('auth.otp.password.send.token'), [
             'username' => $user->mobile
         ]);
-        
+
         $code = Otp::findOrFail(session('code_id'));
-        
-        $this->assertEquals( $user->mobile , session('username'));
+
+        $this->assertEquals($user->mobile, session('username'));
         $this->assertNotNull($code);
-    } 
+    }
 }

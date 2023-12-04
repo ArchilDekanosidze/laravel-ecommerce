@@ -9,17 +9,20 @@ use Illuminate\Support\Facades\Hash;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
+use App\Jobs\Notification\Email\SendEmailWithMailAddress;
+
 
 class ResetPasswordOTPControllerTest extends TestCase
 {
-    public function test_can_show_login_otp_enter_code_form_for_unAuthenticated_users(): void
+    public function test_can_show_reset_password_otp_enter_code_form_for_unAuthenticated_users(): void
     {
         $response = $this->get(route('auth.otp.password.code.form'));
 
         $response->assertStatus(200);
     }
 
-    public function test_can_redirect_otp_enter_code_form_for_Authenticated_users(): void
+    public function test_can_redirect_reset_password_otp_enter_code_form_for_Authenticated_users(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -29,12 +32,12 @@ class ResetPasswordOTPControllerTest extends TestCase
     }
 
 
-    
+
 
     public function test_validate_required_code(): void
     {
         $user = User::factory()->create();
-        $response = $this->post(route('auth.otp.password.code'),[
+        $response = $this->post(route('auth.otp.password.code'), [
             'username' => $user->email,
             'code' => '',
             'password' => '12345678',
@@ -42,14 +45,14 @@ class ResetPasswordOTPControllerTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors(['code' => __('validation.code is invalid.')]);
-        
-        $this->assertGuest();      
+
+        $this->assertGuest();
     }
 
     public function test_validate_digits_code(): void
     {
         $user = User::factory()->create();
-        $response = $this->post(route('auth.otp.password.code'),[
+        $response = $this->post(route('auth.otp.password.code'), [
             'username' => $user->email,
             'code' => 'abcd',
             'password' => '12345678',
@@ -57,14 +60,14 @@ class ResetPasswordOTPControllerTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors(['code' => __('validation.code is invalid.')]);
-        
-        $this->assertGuest();      
+
+        $this->assertGuest();
     }
 
     public function test_validate_four_char_code(): void
     {
         $user = User::factory()->create();
-        $response = $this->post(route('auth.otp.password.code'),[
+        $response = $this->post(route('auth.otp.password.code'), [
             'username' => $user->email,
             'code' => '123456',
             'password' => '12345678',
@@ -72,10 +75,10 @@ class ResetPasswordOTPControllerTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors(['code' => __('validation.code is invalid.')]);
-        
-        $this->assertGuest();      
+
+        $this->assertGuest();
     }
-    
+
 
 
     public function test_validate_invalid_code(): void
@@ -86,16 +89,16 @@ class ResetPasswordOTPControllerTest extends TestCase
         $response = $this->post(route('auth.otp.password.send.token'), [
             'username' => $user->email,
         ]);
-        
-        $response = $this->post(route('auth.otp.password.code'),[
+
+        $response = $this->post(route('auth.otp.password.code'), [
             'username' => $user->email,
             'code' => '1234',
             'password' => '12345678',
             'password_confirmation' => '12345678'
         ]);
         $response->assertSessionHasErrors(['invalidCode' => __('validation.code is invalid.')]);
-        
-        $this->assertGuest();      
+
+        $this->assertGuest();
     }
 
     public function test_validate_required_username(): void
@@ -107,7 +110,7 @@ class ResetPasswordOTPControllerTest extends TestCase
         ]);
 
         $code = Otp::findOrFail(session('code_id'));
-        $response = $this->post(route('auth.otp.password.code'),[
+        $response = $this->post(route('auth.otp.password.code'), [
             'username' => '',
             'code' => $code->code,
             'password' => '12345678',
@@ -115,8 +118,8 @@ class ResetPasswordOTPControllerTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors(['username' => __('validation.required', ['attribute' => 'username'])]);
-        
-        $this->assertGuest();      
+
+        $this->assertGuest();
     }
 
     public function test_validate_confirmed_password(): void
@@ -135,7 +138,7 @@ class ResetPasswordOTPControllerTest extends TestCase
         ]);
         $response->assertSessionHasErrors(['password' => __('validation.confirmed', ['attribute' => 'password'])]);
         $this->assertGuest();
-    }  
+    }
 
     public function test_validate_required_password(): void
     {
@@ -155,7 +158,7 @@ class ResetPasswordOTPControllerTest extends TestCase
 
         $response->assertSessionHasErrors(['password' => __('validation.password is not valid')]);
         $this->assertGuest();
-    }  
+    }
 
     public function test_validate_string_password(): void
     {
@@ -175,7 +178,7 @@ class ResetPasswordOTPControllerTest extends TestCase
 
         $response->assertSessionHasErrors(['password' => __('validation.password is not valid')]);
         $this->assertGuest();
-    }  
+    }
 
     public function test_validate_min_eight_password(): void
     {
@@ -208,7 +211,7 @@ class ResetPasswordOTPControllerTest extends TestCase
 
         $code = Otp::findOrFail(session('code_id'));
 
-        $response = $this->post(route('auth.otp.password.code'),[
+        $response = $this->post(route('auth.otp.password.code'), [
             'username' => $user->email,
             'code' => $code->code,
             'password' => '12345678',
@@ -219,7 +222,7 @@ class ResetPasswordOTPControllerTest extends TestCase
 
         $this->assertNull($code);
     }
-    
+
 
     public function test_if_email_verified_automatic(): void
     {
@@ -231,7 +234,7 @@ class ResetPasswordOTPControllerTest extends TestCase
 
         $code = Otp::findOrFail(session('code_id'));
 
-        $response = $this->post(route('auth.otp.password.code'),[
+        $response = $this->post(route('auth.otp.password.code'), [
             'username' => $user->email,
             'code' => $code->code,
             'password' => '12345678',
@@ -250,16 +253,16 @@ class ResetPasswordOTPControllerTest extends TestCase
         $response = $this->post(route('auth.otp.password.send.token'), [
             'username' => $user->mobile,
         ]);
-        
+
         $code = Otp::findOrFail(session('code_id'));
-        
+
         $response = $this->post(route('auth.otp.password.code'), [
             'username' => $user->mobile,
             'code' => $code->code,
             'password' => '12345678',
             'password_confirmation' => '12345678'
         ]);
-             
+
 
         $user = User::findOrFail($user->id);
 
@@ -276,16 +279,16 @@ class ResetPasswordOTPControllerTest extends TestCase
         $response = $this->post(route('auth.otp.password.send.token'), [
             'username' => $user->email,
         ]);
-        
+
         $code = Otp::findOrFail(session('code_id'));
-        
+
         $response = $this->post(route('auth.otp.password.code'), [
             'username' => $user->email,
             'code' => $code->code,
             'password' => $newPass,
             'password_confirmation' => $newPass
         ]);
-             
+
 
         $user = User::findOrFail($user->id);
 
@@ -308,8 +311,6 @@ class ResetPasswordOTPControllerTest extends TestCase
         $code = Otp::findOrFail($new_code_id);
 
         $this->assertNotNull($code);
-        $this->assertGuest();      
-
+        $this->assertGuest();
     }
-    
 }

@@ -14,6 +14,8 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Jobs\Notification\Sms\SendSmsWithNumber;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Notification\Sms\Contracts\SmsSender;
+use App\Jobs\Notification\Email\SendEmailWithMailAddress;
+
 
 class LoginOTPControllerTest extends TestCase
 {

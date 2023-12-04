@@ -9,10 +9,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\Auth\OTPLogin;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Queue;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Jobs\Notification\Email\SendEmailWithMailAddress;
 
 class LoginControllerTest extends TestCase
 {
@@ -213,6 +215,8 @@ class LoginControllerTest extends TestCase
 
     public function test_if_two_factor_code_set_in_session_for_user_with_two_factor_activated(): void
     {
+        Queue::fake();
+
         $user = User::factory()->hasTwoFactor()->create();
 
         $response = $this->post(route('auth.login'), [
@@ -222,10 +226,13 @@ class LoginControllerTest extends TestCase
         $code = Otp::findOrFail(session('code_id'));
         $this->assertEquals($user->email, session('username'));
         $this->assertNotNull($code);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
     public function test_redirect_user_to_two_factor_form_if_user_has_two_factor(): void
     {
+        Queue::fake();
+
         $user = User::factory()->hasTwoFactor()->create();
 
         $response = $this->post(route('auth.login'), [
@@ -234,6 +241,7 @@ class LoginControllerTest extends TestCase
         ]);
         $response->assertRedirect(route('auth.otp.login.two.factor.code.form'));
         $this->assertGuest();
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
     // auth.logout

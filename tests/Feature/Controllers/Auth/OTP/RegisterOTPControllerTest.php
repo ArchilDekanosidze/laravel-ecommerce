@@ -8,6 +8,9 @@ use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
+use App\Jobs\Notification\Email\SendEmailWithMailAddress;
+
 
 class RegisterOTPControllerTest extends TestCase
 {
@@ -53,7 +56,7 @@ class RegisterOTPControllerTest extends TestCase
 
         $response->assertSessionHasErrors(['username' => __('validation.required', ['attribute' => 'username'])]);
         $this->assertGuest();
-    }  
+    }
 
     public function test_validate_email_exits(): void
     {
@@ -64,7 +67,7 @@ class RegisterOTPControllerTest extends TestCase
         ]);
         $response->assertSessionHasErrors(['Credentials' => __('validation.username already exist or is invalid')]);
         $this->assertGuest();
-    } 
+    }
 
     public function test_validate_mobile_exits(): void
     {
@@ -75,7 +78,7 @@ class RegisterOTPControllerTest extends TestCase
         ]);
         $response->assertSessionHasErrors(['Credentials' => __('validation.username already exist or is invalid')]);
         $this->assertGuest();
-    } 
+    }
 
     public function test_validate_wrong_username(): void
     {
@@ -86,7 +89,7 @@ class RegisterOTPControllerTest extends TestCase
         ]);
         $response->assertSessionHasErrors(['Credentials' => __('validation.username already exist or is invalid')]);
         $this->assertGuest();
-    } 
+    }
 
     public function test_if_code_set_in_session_for_user_by_email(): void
     {
@@ -94,12 +97,12 @@ class RegisterOTPControllerTest extends TestCase
         $response = $this->post(route('auth.otp.register.send.token'), [
             'username' => $username
         ]);
-        
+
         $code = Otp::findOrFail(session('code_id'));
-        
-        $this->assertEquals( $username , session('username'));
+
+        $this->assertEquals($username, session('username'));
         $this->assertNotNull($code);
-    } 
+    }
 
     public function test_if_code_set_in_session_for_user_by_mobile(): void
     {
@@ -107,12 +110,12 @@ class RegisterOTPControllerTest extends TestCase
         $response = $this->post(route('auth.otp.register.send.token'), [
             'username' => $username
         ]);
-        
+
         $code = Otp::findOrFail(session('code_id'));
-        
-        $this->assertEquals( $username , session('username'));
+
+        $this->assertEquals($username, session('username'));
         $this->assertNotNull($code);
-    } 
+    }
 
     public function test_redirect_user_to_code_form_for_register_with_otp(): void
     {
@@ -124,43 +127,43 @@ class RegisterOTPControllerTest extends TestCase
 
         $response->assertRedirect(route('auth.otp.register.code.form'));
         $response->assertSessionHas('success', __('auth.Code Sent'));
-        $this->assertGuest();                                                        
-    } 
+        $this->assertGuest();
+    }
 
     public function test_validate_required_code(): void
     {
 
-        $response = $this->post(route('auth.otp.register.code'),[
+        $response = $this->post(route('auth.otp.register.code'), [
             'code' => ''
         ]);
 
         $response->assertSessionHasErrors(['code' => __('validation.code is invalid.')]);
-        
-        $this->assertGuest();      
+
+        $this->assertGuest();
     }
 
     public function test_validate_digits_code(): void
     {
 
-        $response = $this->post(route('auth.otp.register.code'),[
+        $response = $this->post(route('auth.otp.register.code'), [
             'code' => 'abcd'
         ]);
 
         $response->assertSessionHasErrors(['code' => __('validation.code is invalid.')]);
-        
-        $this->assertGuest();      
+
+        $this->assertGuest();
     }
 
     public function test_validate_four_char_code(): void
     {
 
-        $response = $this->post(route('auth.otp.register.code'),[
+        $response = $this->post(route('auth.otp.register.code'), [
             'code' => '123456'
         ]);
 
         $response->assertSessionHasErrors(['code' => __('validation.code is invalid.')]);
-        
-        $this->assertGuest();      
+
+        $this->assertGuest();
     }
 
 
@@ -172,13 +175,13 @@ class RegisterOTPControllerTest extends TestCase
         $response = $this->post(route('auth.otp.register.send.token'), [
             'username' =>  $username,
         ]);
-        
-        $response = $this->post(route('auth.otp.register.code'),[
+
+        $response = $this->post(route('auth.otp.register.code'), [
             'code' => '1234'
         ]);
         $response->assertSessionHasErrors(['invalidCode' => __('validation.code is invalid.')]);
-        
-        $this->assertGuest();      
+
+        $this->assertGuest();
     }
 
     public function test_if_deleted_token_after_confirm(): void
@@ -191,7 +194,7 @@ class RegisterOTPControllerTest extends TestCase
 
         $code = Otp::findOrFail(session('code_id'));
 
-        $response = $this->post(route('auth.otp.register.code'),[
+        $response = $this->post(route('auth.otp.register.code'), [
             'code' =>  $code->code
         ]);
 
@@ -210,7 +213,7 @@ class RegisterOTPControllerTest extends TestCase
 
         $code = Otp::findOrFail(session('code_id'));
 
-        $response = $this->post(route('auth.otp.register.code'),[
+        $response = $this->post(route('auth.otp.register.code'), [
             'code' =>  $code->code
         ]);
 
@@ -230,7 +233,7 @@ class RegisterOTPControllerTest extends TestCase
 
         $code = Otp::findOrFail(session('code_id'));
 
-        $response = $this->post(route('auth.otp.register.code'),[
+        $response = $this->post(route('auth.otp.register.code'), [
             'code' =>  $code->code
         ]);
 
@@ -250,11 +253,11 @@ class RegisterOTPControllerTest extends TestCase
 
         $code = Otp::findOrFail(session('code_id'));
 
-        $response = $this->post(route('auth.otp.register.code'),[
+        $response = $this->post(route('auth.otp.register.code'), [
             'code' =>  $code->code
         ]);
 
-        $this->assertDatabaseHas('users' , ['email' => $username]);
+        $this->assertDatabaseHas('users', ['email' => $username]);
         $this->assertAuthenticated();
     }
 
@@ -273,7 +276,7 @@ class RegisterOTPControllerTest extends TestCase
         $code = Otp::findOrFail($new_code_id);
 
         $this->assertNotNull($code);
-        $this->assertGuest();      
+        $this->assertGuest();
     }
 
     public function test_if_user_can_register_with_otp_with_rememberToken(): void
@@ -287,7 +290,7 @@ class RegisterOTPControllerTest extends TestCase
 
         $code = Otp::findOrFail(session('code_id'));
 
-        $response = $this->post(route('auth.otp.register.code'),[
+        $response = $this->post(route('auth.otp.register.code'), [
             'code' =>  $code->code
         ]);
 
@@ -305,12 +308,11 @@ class RegisterOTPControllerTest extends TestCase
 
         $code = Otp::findOrFail(session('code_id'));
 
-        $response = $this->post(route('auth.otp.register.code'),[
+        $response = $this->post(route('auth.otp.register.code'), [
             'code' =>  $code->code
         ]);
 
         $this->assertAuthenticated();
         $this->assertNull(auth()->user()->remember_token);
     }
-   
 }

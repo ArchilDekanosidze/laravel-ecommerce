@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\Auth\Traits;
 
 use App\Rules\CodeRule;
@@ -25,18 +26,8 @@ trait hasOTP
         }
         $response = $this->otp->requestCode();
         return $response == $this->otp::CODE_SENT
-        ? $this->SendTokenSuccessResponse()
-        : $this->SendTokenFailedResponse();
-    }
-
-    public function CheckUserNameCondition($request)
-    {
-        return $this->isUserExists($request->username);
-    }
-
-    public function SendCheckUserNameConditionFailedResponse()
-    {
-        return $this->SendCredentialsFailedResponse();
+            ? $this->SendTokenSuccessResponse()
+            : $this->SendTokenFailedResponse();
     }
 
     public function showEnterCodeForm()
@@ -49,8 +40,14 @@ trait hasOTP
         $this->validateCodeForm($request);
         $response = $this->otp->confirmCode();
         return $response == $this->otp::CODE_CONFIRMED
-        ? $this->SendConfirmCodeSuccessResponse()
-        : $this->SendConfirmCodeFailedResponse();
+            ? $this->SendConfirmCodeSuccessResponse()
+            : $this->SendConfirmCodeFailedResponse();
+    }
+
+    public function resend()
+    {
+        $this->otp->resend();
+        return back()->with('success', __('auth.Code Resent'));
     }
 
     protected function validateUserNameForm(Request $request)
@@ -61,6 +58,12 @@ trait hasOTP
             ]
         );
     }
+
+    public function CheckUserNameCondition($request)
+    {
+        return $this->isUserExists($request->username);
+    }
+
     protected function validateCodeForm(Request $request)
     {
         $request->validate(
@@ -70,10 +73,9 @@ trait hasOTP
         );
     }
 
-    public function resend()
+    public function SendCheckUserNameConditionFailedResponse()
     {
-        $this->otp->resend();
-        return back()->with('success', __('auth.Code Resent'));
+        return $this->SendCredentialsFailedResponse();
     }
 
     protected function SendTokenSuccessResponse()

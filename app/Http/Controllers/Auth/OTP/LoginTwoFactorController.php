@@ -15,12 +15,12 @@ class LoginTwoFactorController extends Controller
 
     public function __construct(OTPLoginTwoFactor $otp)
     {
-        $this->middleware('guest')->except('resend');
+        $this->middleware('guest');
         $this->otp = $otp;
     }
 
     public function showEnterCodeForm()
-    {        
+    {
         return view('auth.otp.login-two-factor-enter-code');
     }
 

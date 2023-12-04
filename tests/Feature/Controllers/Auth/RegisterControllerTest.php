@@ -6,9 +6,12 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Events\UserRegistered;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Jobs\Notification\Sms\SendSmsWithNumber;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Jobs\Notification\Email\SendEmailWithMailAddress;
 
 class RegisterControllerTest extends TestCase
 {
@@ -31,18 +34,6 @@ class RegisterControllerTest extends TestCase
     }
 
     //auth.register
-
-    public function test_can_register_method_for_unAuthenticated_users(): void
-    {
-        $user = User::factory()->make();
-        $response = $this->post(route('auth.register'), [
-            'username' => $user->email,
-            'password' => '12345678',
-            'password_confirmation' => '12345678'
-        ]);
-        $response->assertStatus(302);
-        $this->assertAuthenticated();
-    }
 
     public function test_redirect_register_method_for_Authenticated_users(): void
     {
@@ -158,6 +149,8 @@ class RegisterControllerTest extends TestCase
 
     public function test_if_it_can_create_user_with_email(): void
     {
+        Event::fake();
+
         $username = fake()->safeEmail();
         $response = $this->post(route('auth.register'), [
             'username' => $username,
@@ -166,10 +159,13 @@ class RegisterControllerTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('users', ['email' => $username]);
+        Event::assertDispatched(UserRegistered::class, 1);
     }
 
     public function test_if_it_can_create_user_with_mobile(): void
     {
+        Event::fake();
+
         $username = fake()->numerify('##########');
         $response = $this->post(route('auth.register'), [
             'username' => $username,
@@ -178,10 +174,12 @@ class RegisterControllerTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('users', ['mobile' => $username]);
+        Event::assertDispatched(UserRegistered::class, 1);
     }
 
     public function test_if_it_can_login_after_creat_user(): void
     {
+        Event::fake();
         $username = fake()->safeEmail();
         $response = $this->post(route('auth.register'), [
             'username' => $username,
@@ -189,9 +187,10 @@ class RegisterControllerTest extends TestCase
             'password_confirmation' => '123456789'
         ]);
         $this->assertAuthenticated();
+        Event::assertDispatched(UserRegistered::class, 1);
     }
 
-    public function test_if_it_can_fitre_user_register_evenet_after_register_is_done(): void
+    public function test_if_it_can_fire_user_register_evenet_after_register_is_done(): void
     {
         Event::fake();
         $username = fake()->safeEmail();
@@ -205,6 +204,7 @@ class RegisterControllerTest extends TestCase
 
     public function test_if_it_can_redirect_to_home_with_message_after_creat_user(): void
     {
+        Event::fake();
         $username = fake()->safeEmail();
         $response = $this->post(route('auth.register'), [
             'username' => $username,
@@ -212,5 +212,6 @@ class RegisterControllerTest extends TestCase
             'password_confirmation' => '123456789'
         ]);
         $response->assertRedirect(RouteServiceProvider::HOME);
+        Event::assertDispatched(UserRegistered::class, 1);
     }
 }
