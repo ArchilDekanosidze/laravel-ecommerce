@@ -20,6 +20,8 @@ use App\Jobs\Notification\Email\SendEmailWithMailAddress;
 class LoginOTPControllerTest extends TestCase
 {
 
+    //auth.otp.login.form
+
     public function test_can_show_login_otp_enter_username_form_for_unAuthenticated_users(): void
     {
         $response = $this->get(route('auth.otp.login.form'));
@@ -36,19 +38,14 @@ class LoginOTPControllerTest extends TestCase
         $response->assertRedirect(RouteServiceProvider::HOME);
     }
 
-    public function test_can_show_login_otp_enter_code_form_for_unAuthenticated_users(): void
-    {
-        $response = $this->get(route('auth.otp.login.code.form'));
+    //auth.otp.login.send.token
 
-        $response->assertStatus(200);
-    }
-
-    public function test_can_redirect_otp_enter_code_form_for_Authenticated_users(): void
+    public function test_login_can_redirect_otp_send_token_for_Authenticated_users(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->get(route('auth.otp.login.code.form'));
+        $response = $this->get(route('auth.otp.login.send.token'));
         $response->assertRedirect(RouteServiceProvider::HOME);
     }
 
@@ -77,6 +74,8 @@ class LoginOTPControllerTest extends TestCase
 
     public function test_if_code_set_in_session_for_user(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.otp.login.send.token'), [
@@ -87,10 +86,13 @@ class LoginOTPControllerTest extends TestCase
 
         $this->assertEquals($user->email, session('username'));
         $this->assertNotNull($code);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
-    public function test_redirect_user_to_code_form_for_login_with_otp_for_unAuthenticated_user(): void
+    public function test_login_redirect_user_to_code_form_for_login_with_otp_for_unAuthenticated_user(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.otp.login.send.token'), [
@@ -100,8 +102,37 @@ class LoginOTPControllerTest extends TestCase
         $response->assertRedirect(route('auth.otp.login.code.form'));
         $response->assertSessionHas('success', __('auth.Code Sent'));
         $this->assertGuest();
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
+    //auth.otp.login.code.form
+
+    public function test_can_show_login_otp_confirm_form_for_unAuthenticated_users(): void
+    {
+        $response = $this->get(route('auth.otp.login.code.form'));
+
+        $response->assertStatus(200);
+    }
+
+    public function test_can_redirect_otp_enter_code_form_for_Authenticated_users(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->get(route('auth.otp.login.code.form'));
+        $response->assertRedirect(RouteServiceProvider::HOME);
+    }
+
+    //auth.otp.login.code
+
+    public function test_login_can_redirect_otp_enter_code_for_Authenticated_users(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->get(route('auth.otp.login.code'));
+        $response->assertRedirect(RouteServiceProvider::HOME);
+    }
 
     public function test_validate_required_code(): void
     {
@@ -139,10 +170,9 @@ class LoginOTPControllerTest extends TestCase
         $this->assertGuest();
     }
 
-
-
-    public function test_validate_invalid_code(): void
+    public function test_login_validate_invalid_code(): void
     {
+        Queue::fake();
 
         $user = User::factory()->create();
 
@@ -156,12 +186,12 @@ class LoginOTPControllerTest extends TestCase
         $response->assertSessionHasErrors(['invalidCode' => __('validation.code is invalid.')]);
 
         $this->assertGuest();
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
-
-
-    public function test_if_deleted_token_after_confirm(): void
+    public function test_login_if_deleted_token_after_confirm(): void
     {
+        Queue::fake();
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.otp.login.send.token'), [
@@ -177,13 +207,13 @@ class LoginOTPControllerTest extends TestCase
         $code = Otp::find(session('code_id'));
 
         $this->assertNull($code);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
-
-
-
-    public function test_if_email_verified_automatic(): void
+    public function test_login_if_email_verified_automatic(): void
     {
+        Queue::fake();
+
         $user = User::factory()->unverifiedEmail()->unverifiedMobile()->create();
 
         $response = $this->post(route('auth.otp.login.send.token'), [
@@ -199,10 +229,13 @@ class LoginOTPControllerTest extends TestCase
         $user = User::findOrFail($user->id);
 
         $this->assertNotNull($user->email_verified_at);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
-    public function test_if_mobile_verified_automatic(): void
+    public function test_login_if_mobile_verified_automatic(): void
     {
+        Queue::fake();
+
         $user = User::factory()->unverifiedEmail()->unverifiedMobile()->create();
 
         $response = $this->post(route('auth.otp.login.send.token'), [
@@ -218,12 +251,14 @@ class LoginOTPControllerTest extends TestCase
         $user = User::findOrFail($user->id);
 
         $this->assertNotNull($user->mobile_verified_at);
+        Queue::assertPushed(SendSmsWithNumber::class);
     }
 
 
 
     public function test_if_user_can_login_with_otp(): void
     {
+        Queue::fake();
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.otp.login.send.token'), [
@@ -237,29 +272,13 @@ class LoginOTPControllerTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-    }
-
-
-    public function test_if_user_can_resend_otp_code_login(): void
-    {
-        $user = User::factory()->create();
-
-        $response = $this->post(route('auth.otp.login.send.token'), [
-            'username' => $user->email,
-        ]);
-
-        $code_id = session('code_id');
-
-        $response = $this->get(route('auth.otp.login.resend'));
-        $new_code_id = $code_id + 1;
-        $code = Otp::findOrFail($new_code_id);
-
-        $this->assertNotNull($code);
-        $this->assertGuest();
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
     public function test_if_user_can_login_with_otp_with_rememberToken(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.otp.login.send.token'), [
@@ -275,10 +294,12 @@ class LoginOTPControllerTest extends TestCase
 
         $this->assertAuthenticated();
         $this->assertNotNull(auth()->user()->remember_token);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
     public function test_if_user_can_login_with_otp_without_rememberToken(): void
     {
+        Queue::fake();
         $user = User::factory()->create();
 
         $response = $this->post(route('auth.otp.login.send.token'), [
@@ -293,39 +314,37 @@ class LoginOTPControllerTest extends TestCase
 
         $this->assertAuthenticated();
         $this->assertNull(auth()->user()->remember_token);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
+    //auth.otp.login.resend
 
-    /*
-
-    public function test_farazSmsInTestMode(): void
+    public function test_can_redirect_login_resent_otp_for_Authenticated_users(): void
     {
-        // $user = User::factory()->state(['mobile' => '09120919921'])->create();
-        // $user = User::factory()->create();
-        $user = User::find(51);
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->get(route('auth.otp.login.resend'));
+        $response->assertRedirect(RouteServiceProvider::HOME);
+    }
+
+    public function test_if_user_can_resend_otp_code_login(): void
+    {
         Queue::fake();
-
-
-        // $mock = $this->mock(SmsProvider::class, function (MockInterface $mock) {
-        //     $mock->shouldReceive('send')->once();
-        // });
+        $user = User::factory()->create();
 
         $response = $this->post(route('auth.otp.login.send.token'), [
-            'username' => $user->mobile,
+            'username' => $user->email,
         ]);
 
-        $code = Otp::findOrFail(session('code_id'));
+        $code_id = session('code_id');
 
-        $this->assertEquals($user->mobile, session('username'));
+        $response = $this->get(route('auth.otp.login.resend'));
+        $new_code_id = $code_id + 1;
+        $code = Otp::findOrFail($new_code_id);
+
         $this->assertNotNull($code);
-
-        // $this->instance(
-        //     SmsProvider::class,
-        //     Mockery::mock(SmsProvider::class, function (MockInterface $mock) {
-        //         $mock->shouldReceive('send')->once();
-        //     })
-        // );
-        Queue::assertPushed(SendSmsWithNumber::class);
+        $this->assertGuest();
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
-    */
 }

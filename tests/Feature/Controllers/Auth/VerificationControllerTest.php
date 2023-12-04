@@ -14,9 +14,8 @@ class VerificationControllerTest extends TestCase
 {
     //auth.email.send.verification
 
-    public function test_can_redirect_verification_email_for_UnAuthenticated_users(): void
+    public function test_can_redirect_send_verification_email_for_UnAuthenticated_users(): void
     {
-
         $response = $this->get(route('auth.email.send.verification'));
         $response->assertRedirect(route('auth.login'));
     }
@@ -30,7 +29,6 @@ class VerificationControllerTest extends TestCase
 
         $response->assertRedirect(RouteServiceProvider::HOME);
     }
-    //auth.email.send.verification
 
     public function test_can_send_verification_email_for_Authenticated_users(): void
     {

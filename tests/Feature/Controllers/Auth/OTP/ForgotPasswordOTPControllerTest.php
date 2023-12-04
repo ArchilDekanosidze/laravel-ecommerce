@@ -5,16 +5,19 @@ namespace Tests\Feature\Controllers\Auth\OTP;
 use App\Models\Otp;
 use Tests\TestCase;
 use App\Models\User;
+use Illuminate\Support\Facades\Queue;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Jobs\Notification\Sms\SendSmsWithNumber;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Queue;
 use App\Jobs\Notification\Email\SendEmailWithMailAddress;
 
 
 
 class ForgotPasswordOTPControllerTest extends TestCase
 {
+    //auth.otp.password.forget.form
+
     public function test_can_show_forgot_password_otp_enter_username_form_for_unAuthenticated_users(): void
     {
         $response = $this->get(route('auth.otp.password.forget.form'));
@@ -28,6 +31,17 @@ class ForgotPasswordOTPControllerTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->get(route('auth.otp.password.forget.form'));
+        $response->assertRedirect(RouteServiceProvider::HOME);
+    }
+
+    //auth.otp.password.send.token
+
+    public function test_can_redirect_forgot_password_otp_send_token_for_Authenticated_users(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->get(route('auth.otp.password.send.token'));
         $response->assertRedirect(RouteServiceProvider::HOME);
     }
 
@@ -67,6 +81,8 @@ class ForgotPasswordOTPControllerTest extends TestCase
 
     public function test_if_code_set_in_session_for_user_by_email(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
         $response = $this->post(route('auth.otp.password.send.token'), [
             'username' => $user->email
@@ -76,10 +92,13 @@ class ForgotPasswordOTPControllerTest extends TestCase
 
         $this->assertEquals($user->email, session('username'));
         $this->assertNotNull($code);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
     public function test_if_code_set_in_session_for_user_by_mobile(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
         $response = $this->post(route('auth.otp.password.send.token'), [
             'username' => $user->mobile
@@ -89,5 +108,6 @@ class ForgotPasswordOTPControllerTest extends TestCase
 
         $this->assertEquals($user->mobile, session('username'));
         $this->assertNotNull($code);
+        Queue::assertPushed(SendSmsWithNumber::class);
     }
 }

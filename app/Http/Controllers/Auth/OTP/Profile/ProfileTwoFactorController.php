@@ -16,7 +16,7 @@ class ProfileTwoFactorController extends Controller
 
     public function __construct(OTPProfileTwoFactor $otp)
     {
-        $this->middleware('auth')->except('resend');
+        $this->middleware('auth');
         $this->otp = $otp;
     }
 
@@ -43,8 +43,8 @@ class ProfileTwoFactorController extends Controller
     {
         $response = $this->otp->requestCode();
         return $response == $this->otp::CODE_SENT
-        ? $this->SendTokenSuccessResponse()
-        : $this->SendTokenFailedResponse();
+            ? $this->SendTokenSuccessResponse()
+            : $this->SendTokenFailedResponse();
     }
 
     protected function SendTokenSuccessResponse()

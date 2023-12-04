@@ -241,6 +241,15 @@ class LoginTwoFactorControllerTest extends TestCase
 
     // auth.otp.login.two.factor.resend
 
+    public function test_can_redirect_login_two_factor_resent_otp_for_Authenticated_users(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->get(route('auth.otp.login.two.factor.resend'));
+        $response->assertRedirect(RouteServiceProvider::HOME);
+    }
+
     public function test_if_user_can_resend_otp_code_login(): void
     {
         Queue::fake();

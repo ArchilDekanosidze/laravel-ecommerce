@@ -21,18 +21,24 @@ class ProfileEmailControllerTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->get(route('auth.otp.profile.mobile.form'));
+        $response = $this->get(route('auth.otp.profile.email.form'));
 
         $response->assertStatus(200);
     }
 
     public function test_can_redirect_change_email_for_UnAuthenticated_users(): void
     {
-        $response = $this->get(route('auth.otp.profile.mobile.form'));
+        $response = $this->get(route('auth.otp.profile.email.form'));
         $response->assertRedirect(route('auth.login'));
     }
 
     //otp.profile.email
+
+    public function test_can_redirect_change_email_method_for_UnAuthenticated_users(): void
+    {
+        $response = $this->get(route('auth.otp.profile.email'));
+        $response->assertRedirect(route('auth.login'));
+    }
 
     public function test_if_other_user_exists_with_this_email(): void
     {
@@ -60,6 +66,8 @@ class ProfileEmailControllerTest extends TestCase
 
     public function test_if_code_set_in_session_for_user_email(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
         $this->actingAs($user);
         $newEmail = fake()->safeEmail();
@@ -73,9 +81,16 @@ class ProfileEmailControllerTest extends TestCase
         $this->assertNotNull($code);
         $response->assertRedirect(route('auth.otp.profile.email.code.form'));
         $response->assertSessionHas(['success' => __('auth.Code Sent')]);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
     //otp.profile.email.code.form
+
+    public function test_can_redirect_change_email_code_form_for_UnAuthenticated_users(): void
+    {
+        $response = $this->get(route('auth.otp.profile.email.code.form'));
+        $response->assertRedirect(route('auth.login'));
+    }
 
     public function test_can_show_confirm_code_form_for_Authenticated_users(): void
     {
@@ -87,16 +102,18 @@ class ProfileEmailControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_can_redirect_show_confirm_code_form_for_UnAuthenticated_users(): void
+    //otp.profile.email.code
+
+    public function test_can_redirect_confirm_code_method_for_UnAuthenticated_users(): void
     {
-        $response = $this->get(route('auth.otp.profile.email.code.form'));
+        $response = $this->get(route('auth.otp.profile.email.code'));
         $response->assertRedirect(route('auth.login'));
     }
 
-    //otp.profile.email.code
-
     public function test_validate_required_code(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
         $this->actingAs($user);
         $newEmail = fake()->safeEmail();
@@ -110,10 +127,13 @@ class ProfileEmailControllerTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors(['code' => __('validation.code is invalid.')]);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
     public function test_validate_digits_code(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
         $this->actingAs($user);
         $newEmail = fake()->safeEmail();
@@ -127,10 +147,13 @@ class ProfileEmailControllerTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors(['code' => __('validation.code is invalid.')]);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
     public function test_validate_four_char_code(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
         $this->actingAs($user);
         $newEmail = fake()->safeEmail();
@@ -144,10 +167,12 @@ class ProfileEmailControllerTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors(['code' => __('validation.code is invalid.')]);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
     public function test_validate_invalid_code(): void
     {
+        Queue::fake();
 
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -162,10 +187,13 @@ class ProfileEmailControllerTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors(['invalidCode' => __('validation.code is invalid.')]);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
     public function test_code_confirmed(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
         $this->actingAs($user);
         $newEmail = fake()->safeEmail();
@@ -187,10 +215,13 @@ class ProfileEmailControllerTest extends TestCase
         $response->assertRedirect(route('customer.profiles.profile'));
         $this->assertEquals($user->email, $newEmail);
         $this->assertNotNull($user->email_verified_at);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
     public function test_if_deleted_token_after_confirm(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
         $this->actingAs($user);
         $newEmail = fake()->safeEmail();
@@ -209,12 +240,21 @@ class ProfileEmailControllerTest extends TestCase
         $code = Otp::find(session('code_id'));
 
         $this->assertNull($code);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 
     //otp.profile.mobile.resend
 
+    public function test_prfile_email_can_redirect_if_resend_request_for_UnAuthenticated_users(): void
+    {
+        $response = $this->get(route('auth.otp.profile.email.resend'));
+        $response->assertRedirect(route('auth.login'));
+    }
+
     public function test_if_user_can_resend_otp_code_login(): void
     {
+        Queue::fake();
+
         $user = User::factory()->create();
         $this->actingAs($user);
         $newEmail = fake()->safeEmail();
@@ -230,5 +270,6 @@ class ProfileEmailControllerTest extends TestCase
         $code = Otp::findOrFail($new_code_id);
 
         $this->assertNotNull($code);
+        Queue::assertPushed(SendEmailWithMailAddress::class);
     }
 }
