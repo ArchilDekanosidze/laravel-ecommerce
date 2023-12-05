@@ -76,4 +76,13 @@ class UserFactory extends Factory
             ];
         });
     }
+
+    public function admin(): static
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'user_type' => 1,
+            ];
+        });
+    }
 }

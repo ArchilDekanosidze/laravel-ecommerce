@@ -2,19 +2,26 @@
 
 namespace App\Http\Controllers\Admin\Market;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Market\ProductCategoryRequest;
-use App\Models\Market\ProductCategory;
 use App\Services\Image\ImageService;
+use App\Models\Market\ProductCategory;
+use App\Services\Category\ProductCategoryService;
+use App\Http\Requests\Admin\Market\ProductCategoryRequest;
 
 class CategoryController extends Controller
 {
+    private $productCategoryService;
+    public function __construct(ProductCategoryService $productCategoryService)
+    {
+        $this->productCategoryService = $productCategoryService;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $productCategories = ProductCategory::orderBy('created_at', 'desc')->simplePaginate(15);
+        $productCategories = $this->productCategoryService->simplePaginate();
         return view('admin.market.categories.index', compact('productCategories'));
     }
 
@@ -23,26 +30,20 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $categories = ProductCategory::all();
+        $categories = $this->productCategoryService->getAllCategories();
         return view('admin.market.categories.create', compact('categories'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProductCategoryRequest $request, ImageService $imageService)
+    public function store(ProductCategoryRequest $request)
     {
-        $inputs = $request->all();
-        if ($request->hasFile('image')) {
-            $imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'product-category');
-            $result = $imageService->createIndexAndSave($request->file('image'));
-        }
-        if ($result === false) {
-            return redirect()->route('admin.market.categories.index')->with('swal-error', __('admin.There was an error uploading the image'));
-        }
-        $inputs['image'] = $result;
-        $productCategory = ProductCategory::create($inputs);
-        return redirect()->route('admin.market.categories.index')->with('swal-success', __('admin.New category has been successfully registered'));
+        return $this->productCategoryService->store($request) === $this->productCategoryService::SUCCESS ?
+            redirect()->route('admin.market.categories.index')
+            ->with('swal-success', __('admin.New category has been successfully registered'))
+            : redirect()->route('admin.market.categories.index')
+            ->with('swal-error', __('admin.There was an error uploading the image'));
     }
 
     /**
@@ -58,36 +59,20 @@ class CategoryController extends Controller
      */
     public function edit(ProductCategory $productCategory)
     {
-        $parent_categories = ProductCategory::where('parent_id', null)->get()->except($productCategory->id);
+        $parent_categories = $this->productCategoryService->getOtherParents($productCategory);
         return view('admin.market.categories.edit', compact('productCategory', 'parent_categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(ProductCategoryRequest $request, ProductCategory $productCategory, ImageService $imageService)
+    public function update(ProductCategoryRequest $request, ProductCategory $productCategory)
     {
-        $inputs = $request->all();
-
-        if ($request->hasFile('image')) {
-            if (!empty($productCategory->image)) {
-                $imageService->deleteDirectoryAndFiles($productCategory->image['directory']);
-            }
-            $imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'product-category');
-            $result = $imageService->createIndexAndSave($request->file('image'));
-            if ($result === false) {
-                return redirect()->route('admin.market.categories.index')->with('swal-error', __('admin.There was an error uploading the image'));
-            }
-            $inputs['image'] = $result;
-        } else {
-            if (isset($inputs['currentImage']) && !empty($productCategory->image)) {
-                $image = $productCategory->image;
-                $image['currentImage'] = $inputs['currentImage'];
-                $inputs['image'] = $image;
-            }
-        }
-        $productCategory->update($inputs);
-        return redirect()->route('admin.market.categories.index')->with('swal-success', __('admin.The category has been successfully edited'));
+        return $this->productCategoryService->update($request, $productCategory) === $this->productCategoryService::SUCCESS ?
+            redirect()->route('admin.market.categories.index')
+            ->with('swal-success', __('admin.The category has been successfully edited'))
+            : redirect()->route('admin.market.categories.index')
+            ->with('swal-error', __('admin.There was an error uploading the image'));
     }
 
     /**
@@ -95,7 +80,8 @@ class CategoryController extends Controller
      */
     public function destroy(ProductCategory $productCategory)
     {
-        $result = $productCategory->delete();
-        return redirect()->route('admin.market.categories.index')->with('swal-success', __('admin.The category has been successfully removed'));
+        $this->productCategoryService->destroy($productCategory);
+        return redirect()->route('admin.market.categories.index')
+            ->with('swal-success', __('admin.The category has been successfully removed'));
     }
 }

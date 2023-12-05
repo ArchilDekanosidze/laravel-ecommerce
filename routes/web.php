@@ -137,7 +137,7 @@ Route::prefix('auth')->name('auth.')->middleware('throttle:Medium')->group(funct
 |--------------------------------------------------------------------------
  */
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware('is.admin')->group(function () {
 
     Route::get('/', [AdminDashboardController::class, 'index'])->name('home');
 

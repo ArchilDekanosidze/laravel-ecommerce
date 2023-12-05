@@ -166,4 +166,9 @@ class User extends Authenticatable
     {
         return $this->mobile;
     }
+
+    public function isAdmin()
+    {
+        return $this->user_type;
+    }
 }
