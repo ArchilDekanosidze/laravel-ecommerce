@@ -39,7 +39,7 @@ class CategoryController extends Controller
      */
     public function store(ProductCategoryRequest $request)
     {
-        return $this->productCategoryService->store($request) === $this->productCategoryService::SUCCESS ?
+        return $this->productCategoryService->store() === $this->productCategoryService::SUCCESS ?
             redirect()->route('admin.market.categories.index')
             ->with('swal-success', __('admin.New category has been successfully registered'))
             : redirect()->route('admin.market.categories.index')
@@ -68,7 +68,7 @@ class CategoryController extends Controller
      */
     public function update(ProductCategoryRequest $request, ProductCategory $productCategory)
     {
-        return $this->productCategoryService->update($request, $productCategory) === $this->productCategoryService::SUCCESS ?
+        return $this->productCategoryService->update($productCategory) === $this->productCategoryService::SUCCESS ?
             redirect()->route('admin.market.categories.index')
             ->with('swal-success', __('admin.The category has been successfully edited'))
             : redirect()->route('admin.market.categories.index')

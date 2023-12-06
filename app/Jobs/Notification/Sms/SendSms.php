@@ -3,12 +3,14 @@
 namespace App\Jobs\Notification\Sms;
 
 use App\Models\User;
-use App\Services\Notification\Sms\SmsProvider;
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use App\Services\Notification\Sms\SmsProvider;
+use App\Services\Notification\Sms\Contracts\SmsSender;
+use App\Services\Notification\Sms\Contracts\SmsSenderInterface;
 
 class SendSms implements ShouldQueue
 {
@@ -31,7 +33,9 @@ class SendSms implements ShouldQueue
      */
     public function handle()
     {
-        $smssender = new SmsProvider($this->user, $this->data);
-        return $smssender->send();
+        $smsSender = new SmsProvider(app()->make(SmsSenderInterface::class));
+        $smsSender->setUser($this->user);
+        $smsSender->setData($this->data);
+        return $smsSender->send();
     }
 }

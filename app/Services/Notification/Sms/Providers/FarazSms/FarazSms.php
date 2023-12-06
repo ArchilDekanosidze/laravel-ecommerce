@@ -1,21 +1,30 @@
 <?php
+
 namespace App\Services\Notification\Sms\Providers\FarazSms;
 
 use App\Services\Notification\Sms\Contracts\SmsResult;
+use App\Services\Notification\Sms\Contracts\SmsSenderInterface;
 use App\Services\Notification\Sms\Providers\FarazSms\Constants\SmsTypesFaraz;
 
-class FarazSms
+class FarazSms implements SmsSenderInterface
 {
     private $mobiles;
     private $data;
     private $input_data;
     private $result;
 
-    public function __construct($mobiles, array $data)
+    public function __construct()
+    {
+        $this->result = array();
+    }
+
+    public function setMobiles($mobiles)
     {
         $this->mobiles = is_array($mobiles) ? $mobiles : array($mobiles);
+    }
+    public function setData(array $data)
+    {
         $this->data = $data;
-        $this->result = array();
     }
 
     public function send()
@@ -53,13 +62,17 @@ class FarazSms
     {
         $response = json_decode($response);
         if (gettype($response) == 'integer') {
-            $this->result[] = ['status' => SmsResult::SENT_SUCCESS,
+            $this->result[] = [
+                'status' => SmsResult::SENT_SUCCESS,
                 'code' => $response,
-                'message' => 'Ok'];
+                'message' => 'Ok'
+            ];
         } else {
-            $this->result[] = ['status' => SmsResult::SENT_Failed,
+            $this->result[] = [
+                'status' => SmsResult::SENT_Failed,
                 'code' => $response[0],
-                'message' => $response[1]];
+                'message' => $response[1]
+            ];
         }
     }
 
@@ -69,5 +82,4 @@ class FarazSms
             $this->result = $this->result[0];
         }
     }
-
 }

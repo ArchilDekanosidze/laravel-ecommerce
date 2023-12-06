@@ -1,20 +1,34 @@
 <?php
+
 namespace App\Services\Notification\Sms;
 
 use App\Services\Notification\Sms\Contracts\SmsSender;
+use App\Services\Notification\Sms\Contracts\SmsSenderInterface;
+use App\Services\Notification\Sms\Contracts\SmsProviderInterface;
 use App\Services\Notification\Sms\Exceptions\SomeUsersDoNotHaveNumber;
 
-class SmsToMultipleUserProvider
+class SmsToMultipleUserProvider implements SmsProviderInterface
 {
     private $phone_number_column_name = 'mobile';
     private $phone_numbers;
     private $users;
     private $data;
+    private $smsSender;
 
-    public function __construct($users, array $data)
+
+    public function __construct(SmsSenderInterface $smsSender)
     {
         $this->phone_numbers = array();
+        $this->smsSender = $smsSender;
+    }
+
+    public function setUsers($users)
+    {
         $this->users = $users;
+    }
+
+    public function setData($data)
+    {
         $this->data = $data;
     }
 
@@ -22,10 +36,10 @@ class SmsToMultipleUserProvider
     {
         $this->havePhoneNumber();
         $this->CreateArrayNumber();
-        $smsProvider = app()->makeWith(SmsSender::class, ['phone_numbers' => $this->phone_numbers, 'data' => $this->data]);
-        $result = $smsProvider->send();
+        $this->smsSender->setMobiles($this->phone_numbers);
+        $this->smsSender->setData($this->data);
+        $result = $this->smsSender->send();
         return $result;
-
     }
 
     private function havePhoneNumber()
@@ -44,5 +58,4 @@ class SmsToMultipleUserProvider
             array_push($this->phone_numbers, $mobile);
         }
     }
-
 }

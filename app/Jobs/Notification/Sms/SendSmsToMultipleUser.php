@@ -2,12 +2,13 @@
 
 namespace App\Jobs\Notification\Sms;
 
-use App\Services\Notification\Sms\SmsToMultipleUserProvider;
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use App\Services\Notification\Sms\SmsToMultipleUserProvider;
+use App\Services\Notification\Sms\Contracts\SmsSenderInterface;
 
 class SendSmsToMultipleUser implements ShouldQueue
 {
@@ -30,7 +31,9 @@ class SendSmsToMultipleUser implements ShouldQueue
      */
     public function handle()
     {
-        $smssender = new SmsToMultipleUserProvider($this->multipleUser, $this->data);
-        return $smssender->send();
+        $smsSender = new SmsToMultipleUserProvider(app()->make(SmsSenderInterface::class));
+        $smsSender->setUsers($this->multipleUser);
+        $smsSender->setData($this->data);
+        return $smsSender->send();
     }
 }

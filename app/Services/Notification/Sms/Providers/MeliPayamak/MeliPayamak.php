@@ -1,11 +1,12 @@
 <?php
+
 namespace App\Services\Notification\Sms\Providers\MeliPayamak;
 
 use App\Services\Notification\Sms\Contracts\SmsResult;
-use App\Services\Notification\Sms\Contracts\SmsSender;
+use App\Services\Notification\Sms\Contracts\SmsSenderInterface;
 use App\Services\Notification\Sms\Providers\MeliPayamak\Constants\SmsTypesMeliPayamak;
 
-class MeliPayamak implements SmsSender
+class MeliPayamak implements SmsSenderInterface
 {
     private $mobiles;
     private $variables;
@@ -14,14 +15,22 @@ class MeliPayamak implements SmsSender
 
     public function __construct($mobiles, array $data)
     {
+        $this->result = array();
+    }
+
+    public function setMobiles($mobiles)
+    {
         $this->mobiles = is_array($mobiles) ? $mobiles : array($mobiles);
+    }
+
+    public function setData(array $data)
+    {
         $newVariables = array();
         foreach ($data['variables'] as $key => $value) {
             array_push($newVariables, $value);
         }
         $this->variables = implode(';', $newVariables);
         $this->patternCode = SmsTypesMeliPayamak::toPatternCode($data['type']);
-        $this->result = array();
     }
 
     public function send()
@@ -52,7 +61,6 @@ class MeliPayamak implements SmsSender
         if (!is_null($data)) {
 
             $fields_string = http_build_query($data);
-
         }
 
         $handle = curl_init();
@@ -80,7 +88,6 @@ class MeliPayamak implements SmsSender
         if ($curl_errno) {
 
             throw new \Exception($curl_error);
-
         }
 
         curl_close($handle);
@@ -92,13 +99,17 @@ class MeliPayamak implements SmsSender
     {
         $response = json_decode($response);
         if ($response->StrRetStatus == "Ok") {
-            $this->result[] = ['status' => SmsResult::SENT_SUCCESS,
+            $this->result[] = [
+                'status' => SmsResult::SENT_SUCCESS,
                 'code' => $response->Value,
-                'message' => $response->StrRetStatus];
+                'message' => $response->StrRetStatus
+            ];
         } else {
-            $this->result[] = ['status' => SmsResult::SENT_Failed,
+            $this->result[] = [
+                'status' => SmsResult::SENT_Failed,
                 'code' => $response->RetStatus,
-                'message' => $response->StrRetStatus];
+                'message' => $response->StrRetStatus
+            ];
         }
     }
 
@@ -108,5 +119,4 @@ class MeliPayamak implements SmsSender
             $this->result = $this->result[0];
         }
     }
-
 }

@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\Notification\Email\SendEmailWithMailAddress;
-use App\Jobs\Notification\Sms\SendSmsToMultipleUser;
-use App\Mail\UserRegistered;
 use App\Models\User;
-use App\Services\Notification\Sms\Contracts\SmsTypes;
+use App\Mail\UserRegistered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
+use App\Jobs\Notification\Sms\SendSms;
+use App\Jobs\Notification\Sms\SendSmsToMultipleUser;
+use App\Services\Notification\Sms\Contracts\SmsTypes;
+use App\Jobs\Notification\Email\SendEmailWithMailAddress;
+use App\Jobs\Notification\Sms\SendSmsWithNumber;
 
 class TestController extends Controller
 {
@@ -21,7 +23,6 @@ class TestController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-
     }
 
     public function tlogin(Request $request)
@@ -44,13 +45,12 @@ class TestController extends Controller
 
     public function testSms()
     {
+        $users = User::find([22, 24]);
         $data = [
-            'type' => SmsTypes::VERIFICATION_CODE,
-            'variables' => ['verificationCode' => 'tl'],
+            'type' => SmsTypes::OTP_CODE,
+            'variables' => ['verificationCode' => 123],
         ];
-        $users = User::find([1, 6]);
         SendSmsToMultipleUser::dispatch($users, $data);
-        // SendSmsWithNumber::dispatchSync(['09120919921'], $data);return;
     }
 
     public function tredis()
@@ -58,15 +58,10 @@ class TestController extends Controller
         Redis::rpush('list6', 'hamed', 'ali', 'reza', 'nafas', 'mahshid');
         Redis::lset('list6', 2, 'maryam');
         dump(Redis::lrange('list6', 0, 10));
-
     }
 
     public function tMongo()
     {
         dd(phpinfo());
     }
-    
-    
-    
-
 }

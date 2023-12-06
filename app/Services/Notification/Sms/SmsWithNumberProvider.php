@@ -3,22 +3,35 @@
 namespace App\Services\Notification\Sms;
 
 use App\Services\Notification\Sms\Contracts\SmsSender;
+use App\Services\Notification\Sms\Contracts\SmsSenderInterface;
+use App\Services\Notification\Sms\Contracts\SmsProviderInterface;
 
-class SmsWithNumberProvider
+class SmsWithNumberProvider implements SmsProviderInterface
 {
     private $phone_numbers;
     private $data;
+    private $smsSender;
 
-    public function __construct($phone_numbers, $data)
+    public function __construct(SmsSenderInterface $smsSender)
+    {
+        $this->smsSender = $smsSender;
+    }
+
+    public function setPhoneNumber($phone_numbers)
     {
         $this->phone_numbers = $phone_numbers;
+    }
+
+    public function setData($data)
+    {
         $this->data = $data;
     }
 
     public function send()
     {
-        $smsProvider = app()->makeWith(SmsSender::class, ['phone_numbers' => $this->phone_numbers, 'data' => $this->data]);
-        $result = $smsProvider->send();
+        $this->smsSender->setMobiles($this->phone_numbers);
+        $this->smsSender->setData($this->data);
+        $result = $this->smsSender->send();
         return $result;
     }
 }

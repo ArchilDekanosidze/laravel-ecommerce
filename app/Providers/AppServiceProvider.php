@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use App\Services\Uploader\StorageManager;
 use Illuminate\Contracts\Foundation\Application;
-use App\Services\Notification\Sms\Contracts\SmsSender;
 use App\Services\Uploader\Image\ImageInterventionService;
 use App\Services\Notification\Sms\Providers\FarazSms\FarazSms;
+use App\Services\Notification\Sms\Contracts\SmsSenderInterface;
 use App\Services\Uploader\Image\Contracts\ImageServiceInterface;
 
 class AppServiceProvider extends ServiceProvider
@@ -42,13 +42,12 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        $this->app->bind(SmsSender::class, function (Application $app, $params) {
-            return new FarazSms($params['phone_numbers'], $params['data']);
-        });
+        $this->app->bind(SmsSenderInterface::class, FarazSms::class);
+        $this->app->bind(ImageServiceInterface::class, ImageInterventionService::class);
 
 
-        $this->app->bind(ImageServiceInterface::class, function (Application $app, $params) {
-            return new ImageInterventionService(new StorageManager());
-        });
+        // $this->app->bind(ImageServiceInterface::class, function (Application $app, $params) {
+        //     return new ImageInterventionService(new StorageManager());
+        // });
     }
 }

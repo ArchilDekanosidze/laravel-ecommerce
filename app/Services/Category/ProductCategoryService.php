@@ -10,9 +10,11 @@ use App\Services\Uploader\Image\Contracts\ImageServiceInterface;
 class ProductCategoryService implements CategoryInterface
 {
     private $imageService;
-    public function __construct(ImageServiceInterface $imageService)
+    private $request;
+    public function __construct(ImageServiceInterface $imageService, Request $request)
     {
         $this->imageService = $imageService;
+        $this->request = $request;
     }
     public function simplePaginate()
     {
@@ -22,10 +24,10 @@ class ProductCategoryService implements CategoryInterface
     {
         return ProductCategory::all();
     }
-    public function store(Request $request)
+    public function store()
     {
-        $inputs = $request->all();
-        $result = $this->saveImage($request);
+        $inputs = $this->request->all();
+        $result = $this->saveImage();
         $inputs['image'] = $result;
         ProductCategory::create($inputs);
         return self::SUCCESS;
@@ -34,11 +36,11 @@ class ProductCategoryService implements CategoryInterface
     {
         return ProductCategory::where('parent_id', null)->get()->except($productCategory->id);
     }
-    public function update(Request $request, $productCategory)
+    public function update($productCategory)
     {
-        $inputs = $request->all();
+        $inputs = $this->request->all();
 
-        $inputs = $this->updateImage($request, $productCategory, $inputs);
+        $inputs = $this->updateImage($productCategory, $inputs);
 
         $productCategory->update($inputs);
         return self::SUCCESS;
@@ -48,21 +50,21 @@ class ProductCategoryService implements CategoryInterface
         return $productCategory->delete();
     }
 
-    protected function saveImage($request)
+    protected function saveImage()
     {
-        if ($request->hasFile('image')) {
-            return $this->saveImageProccess($request);
+        if ($this->request->hasFile('image')) {
+            return $this->saveImageProccess();
         }
     }
 
-    protected function updateImage($request, $productCategory, $inputs)
+    protected function updateImage($productCategory, $inputs)
     {
-        if ($request->hasFile('image')) {
+        if ($this->request->hasFile('image')) {
             if (!empty($productCategory->image)) {
                 $this->imageService->deleteFiles($productCategory->image['indexArray']);
             }
 
-            $result = $this->saveImageProccess($request);
+            $result = $this->saveImageProccess();
 
             $inputs['image'] = $result;
         } else {
@@ -74,9 +76,9 @@ class ProductCategoryService implements CategoryInterface
         }
         return $inputs;
     }
-    protected function saveImageProccess($request)
+    protected function saveImageProccess()
     {
         $this->imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'product-category');
-        return $this->imageService->createIndexAndSave($request->file('image'));
+        return $this->imageService->createIndexAndSave($this->request->file('image'));
     }
 }
