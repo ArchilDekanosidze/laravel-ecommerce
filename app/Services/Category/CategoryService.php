@@ -7,7 +7,7 @@ use App\Models\Market\ProductCategory;
 use App\Services\Category\Contracts\CategoryInterface;
 use App\Services\Uploader\Image\Contracts\ImageServiceInterface;
 
-class ProductCategoryService implements CategoryInterface
+class CategoryService implements CategoryInterface
 {
     private $imageService;
     private $request;

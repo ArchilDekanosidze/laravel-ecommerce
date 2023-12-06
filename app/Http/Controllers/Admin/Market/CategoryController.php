@@ -6,13 +6,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Image\ImageService;
 use App\Models\Market\ProductCategory;
-use App\Services\Category\ProductCategoryService;
+use App\Services\Category\CategoryService;
 use App\Http\Requests\Admin\Market\ProductCategoryRequest;
 
 class CategoryController extends Controller
 {
     private $productCategoryService;
-    public function __construct(ProductCategoryService $productCategoryService)
+    public function __construct(CategoryService $productCategoryService)
     {
         $this->productCategoryService = $productCategoryService;
     }
