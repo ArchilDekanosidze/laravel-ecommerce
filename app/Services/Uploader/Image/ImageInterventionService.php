@@ -18,32 +18,26 @@ class ImageInterventionService implements ImageServiceInterface
 
     public function save($image)
     {
-        $this->storageManager->setFile($image);
-
-        $newImage = Image::make($image->getRealPath())->encode('jpg');
-        $this->storageManager->setNewFile($newImage);
-
-        $this->storageManager->putFile();
-        return $this->storageManager->getFileAddress();
+        $fileFormat = $this->prepareStorage($image);
+        $convertedImage = Image::make($image->getRealPath())->encode($fileFormat);
+        return $this->storeAndGetAddress($convertedImage);
     }
 
 
     public function fitAndSave($image, $width, $height)
     {
-        $this->storageManager->setFile($image);
+        $fileFormat = $this->prepareStorage($image);
 
-        $newImage = Image::make($image->getRealPath())->fit($width, $height)->encode('jpg');
-        $this->storageManager->setNewFile($newImage);
+        $convertedImage = Image::make($image->getRealPath())->fit($width, $height)->encode($fileFormat);
 
-        $this->storageManager->putFile();
-        return $this->storageManager->getFileAddress();
+        return $this->storeAndGetAddress($convertedImage);
     }
 
     public function createIndexAndSave($image)
     {
         $imageSizes = Config::get('image.index-image-sizes');
 
-        $this->storageManager->setFile($image);
+        $fileFormat = $this->prepareStorage($image);
 
         $imageName = $this->storageManager->getFileName();
 
@@ -56,10 +50,9 @@ class ImageInterventionService implements ImageServiceInterface
 
             $this->storageManager->provider();
 
-            $newImage = Image::make($image->getRealPath())->fit($imageSize['width'], $imageSize['height'])->encode('jpg');
-            $this->storageManager->setNewFile($newImage);
-            $this->storageManager->putFile();
-            $indexArray[$sizeAlias] = $this->storageManager->getFileAddress();
+            $convertedImage = Image::make($image->getRealPath())->fit($imageSize['width'], $imageSize['height'])->encode($fileFormat);
+
+            $indexArray[$sizeAlias] = $this->storeAndGetAddress($convertedImage);
         }
         $images['indexArray'] = $indexArray;
         $images['currentImage'] = Config::get('image.default-current-index-image');
@@ -83,5 +76,18 @@ class ImageInterventionService implements ImageServiceInterface
     public function setDisk($disk)
     {
         $this->storageManager->setDisk($disk);
+    }
+
+    public function prepareStorage($image)
+    {
+        $this->storageManager->setFile($image);
+        return $this->storageManager->getFileFormat();
+    }
+
+    public function storeAndGetAddress($convertedImage)
+    {
+        $this->storageManager->setConvertedFile($convertedImage);
+        $this->storageManager->putFile();
+        return $this->storageManager->getFileAddress();
     }
 }

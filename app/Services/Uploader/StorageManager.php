@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class StorageManager
 {
     protected $file;
-    protected $newFile;
+    protected $convertedFile;
     protected $exclusiveDirectory;
     protected $fileDirectory;
     protected $fileName;
@@ -20,7 +20,7 @@ class StorageManager
 
     public function putFile()
     {
-        return Storage::disk($this->disk)->put($this->getFileAddress(), $this->newFile);
+        return Storage::disk($this->disk)->put($this->getFileAddress(), $this->convertedFile);
     }
 
     public function isFileExists(string $fileName)
@@ -51,9 +51,9 @@ class StorageManager
         $this->provider();
     }
 
-    public function setNewFile($newFile)
+    public function setConvertedFile($convertedFile)
     {
-        $this->newFile = $newFile;
+        $this->convertedFile = $convertedFile;
     }
 
     public function getExclusiveDirectory()
