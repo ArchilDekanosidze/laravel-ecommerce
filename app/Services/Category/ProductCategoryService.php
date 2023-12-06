@@ -3,15 +3,14 @@
 namespace App\Services\Category;
 
 use Illuminate\Http\Request;
-use App\Services\Image\ImageService;
 use App\Models\Market\ProductCategory;
 use App\Services\Category\Contracts\CategoryInterface;
-use App\Http\Requests\Admin\Market\ProductCategoryRequest;
+use App\Services\Uploader\Image\Contracts\ImageServiceInterface;
 
 class ProductCategoryService implements CategoryInterface
 {
     private $imageService;
-    public function __construct(ImageService $imageService)
+    public function __construct(ImageServiceInterface $imageService)
     {
         $this->imageService = $imageService;
     }
@@ -26,15 +25,9 @@ class ProductCategoryService implements CategoryInterface
     public function store(Request $request)
     {
         $inputs = $request->all();
-        if ($request->hasFile('image')) {
-            $this->imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'product-category');
-            $result = $this->imageService->createIndexAndSave($request->file('image'));
-        }
-        if ($result === false) {
-            return self::UPLOAD_IMAGE_FAILED;
-        }
+        $result = $this->saveImage($request);
         $inputs['image'] = $result;
-        $productCategory = ProductCategory::create($inputs);
+        ProductCategory::create($inputs);
         return self::SUCCESS;
     }
     public function getOtherParents($productCategory)
@@ -45,15 +38,32 @@ class ProductCategoryService implements CategoryInterface
     {
         $inputs = $request->all();
 
+        $inputs = $this->updateImage($request, $productCategory, $inputs);
+
+        $productCategory->update($inputs);
+        return self::SUCCESS;
+    }
+    public function destroy($productCategory)
+    {
+        return $productCategory->delete();
+    }
+
+    protected function saveImage($request)
+    {
+        if ($request->hasFile('image')) {
+            return $this->saveImageProccess($request);
+        }
+    }
+
+    protected function updateImage($request, $productCategory, $inputs)
+    {
         if ($request->hasFile('image')) {
             if (!empty($productCategory->image)) {
-                $this->imageService->deleteDirectoryAndFiles($productCategory->image['directory']);
+                $this->imageService->deleteFiles($productCategory->image['indexArray']);
             }
-            $this->imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'product-category');
-            $result = $this->imageService->createIndexAndSave($request->file('image'));
-            if ($result === false) {
-                return self::UPLOAD_IMAGE_FAILED;;
-            }
+
+            $result = $this->saveImageProccess($request);
+
             $inputs['image'] = $result;
         } else {
             if (isset($inputs['currentImage']) && !empty($productCategory->image)) {
@@ -62,11 +72,11 @@ class ProductCategoryService implements CategoryInterface
                 $inputs['image'] = $image;
             }
         }
-        $productCategory->update($inputs);
-        return self::SUCCESS;
+        return $inputs;
     }
-    public function destroy($productCategory)
+    protected function saveImageProccess($request)
     {
-        return $productCategory->delete();
+        $this->imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'product-category');
+        return $this->imageService->createIndexAndSave($request->file('image'));
     }
 }
