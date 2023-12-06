@@ -22,7 +22,7 @@
         <section class="main-body-container">
             <section class="main-body-container-header">
                 <h5>
-                {{__('admin.create image')}}
+                    {{__('admin.create image')}}
                 </h5>
             </section>
 
@@ -30,8 +30,7 @@
             </section>
 
             <section>
-                <form action="{{ route('admin.market.products.galleries.store', $product->id) }}" method="post"
-                    enctype="multipart/form-data">
+                <form action="{{ route('admin.market.products.galleries.store', $product->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <section class="row">
 
@@ -73,53 +72,53 @@
 <script src="{{ asset('admin-assets/jalalidatepicker/persian-date.min.js') }}"></script>
 <script src="{{ asset('admin-assets/jalalidatepicker/persian-datepicker.min.js') }}"></script>
 <script>
-CKEDITOR.replace('introduction');
+    ClassicEditor.create(document.querySelector('#introduction'), {});
 </script>
 
 <script>
-$(document).ready(function() {
-    $('#published_at_view').persianDatepicker({
-        format: 'YYYY/MM/DD',
-        altField: '#published_at'
-    })
-});
-</script>
-
-<script>
-$(document).ready(function() {
-    var tags_input = $('#tags');
-    var select_tags = $('#select_tags');
-    var default_tags = tags_input.val();
-    var default_data = null;
-
-    if (tags_input.val() !== null && tags_input.val().length > 0) {
-        default_data = default_tags.split(',');
-    }
-
-    select_tags.select2({
-        placeholder: "{{__('admin.please choose your tags')}}",
-        tags: true,
-        data: default_data
+    $(document).ready(function() {
+        $('#published_at_view').persianDatepicker({
+            format: 'YYYY/MM/DD',
+            altField: '#published_at'
+        })
     });
-    select_tags.children('option').attr('selected', true).trigger('change');
-
-
-    $('#form').submit(function(event) {
-        if (select_tags.val() !== null && select_tags.val().length > 0) {
-            var selectedSource = select_tags.val().join(',');
-            tags_input.val(selectedSource)
-        }
-    })
-})
 </script>
 
 <script>
-$(function() {
-    $("#btn-copy").on('click', function() {
-        var ele = $(this).parent().prev().clone(true);
-        $(this).before(ele);
+    $(document).ready(function() {
+        var tags_input = $('#tags');
+        var select_tags = $('#select_tags');
+        var default_tags = tags_input.val();
+        var default_data = null;
+
+        if (tags_input.val() !== null && tags_input.val().length > 0) {
+            default_data = default_tags.split(',');
+        }
+
+        select_tags.select2({
+            placeholder: "{{__('admin.please choose your tags')}}",
+            tags: true,
+            data: default_data
+        });
+        select_tags.children('option').attr('selected', true).trigger('change');
+
+
+        $('#form').submit(function(event) {
+            if (select_tags.val() !== null && select_tags.val().length > 0) {
+                var selectedSource = select_tags.val().join(',');
+                tags_input.val(selectedSource)
+            }
+        })
     })
-})
+</script>
+
+<script>
+    $(function() {
+        $("#btn-copy").on('click', function() {
+            var ele = $(this).parent().prev().clone(true);
+            $(this).before(ele);
+        })
+    })
 </script>
 
 @endsection

@@ -23,7 +23,7 @@
         <section class="main-body-container">
             <section class="main-body-container-header">
                 <h5>
-                {{__('admin.create email')}}
+                    {{__('admin.create email')}}
                 </h5>
             </section>
 
@@ -39,8 +39,7 @@
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="">{{__('admin.email subject')}}</label>
-                                <input type="text" name="subject" class="form-control form-control-sm"
-                                    value="{{ old('subject') }}">
+                                <input type="text" name="subject" class="form-control form-control-sm" value="{{ old('subject') }}">
                             </div>
                             @error('subject')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -55,8 +54,7 @@
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="">{{__('admin.publish date')}}</label>
-                                <input type="text" name="published_at" id="published_at"
-                                    class="form-control form-control-sm d-none">
+                                <input type="text" name="published_at" id="published_at" class="form-control form-control-sm d-none">
                                 <input type="text" id="published_at_view" class="form-control form-control-sm">
                             </div>
                             @error('published_at')
@@ -89,8 +87,7 @@
                         <section class="col-12">
                             <div class="form-group">
                                 <label for="">{{__('admin.email body')}}</label>
-                                <textarea name="body" id="body" class="form-control form-control-sm"
-                                    rows="6">{{ old('body') }}</textarea>
+                                <textarea name="body" id="body" class="form-control form-control-sm" rows="6">{{ old('body') }}</textarea>
                             </div>
                             @error('body')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -119,24 +116,24 @@
 
 <script src="{{ asset('admin-assets/ckeditor/ckeditor.js') }}"></script>
 <script>
-CKEDITOR.replace('body');
+    ClassicEditor.create(document.querySelector('#body'), {});
 </script>
 
 <script src="{{ asset('admin-assets/jalalidatepicker/persian-date.min.js') }}"></script>
 <script src="{{ asset('admin-assets/jalalidatepicker/persian-datepicker.min.js') }}"></script>
 <script>
-$(document).ready(function() {
-    $('#published_at_view').persianDatepicker({
-        format: 'YYYY/MM/DD',
-        altField: '#published_at',
-        timePicker: {
-            enabled: true,
-            meridiem: {
-                enabled: true
+    $(document).ready(function() {
+        $('#published_at_view').persianDatepicker({
+            format: 'YYYY/MM/DD',
+            altField: '#published_at',
+            timePicker: {
+                enabled: true,
+                meridiem: {
+                    enabled: true
+                }
             }
-        }
-    })
-});
+        })
+    });
 </script>
 
 

@@ -21,7 +21,7 @@
         <section class="main-body-container">
             <section class="main-body-container-header">
                 <h5>
-                {{__('admin.create faq')}}
+                    {{__('admin.create faq')}}
                 </h5>
             </section>
 
@@ -38,8 +38,7 @@
                         <section class="col-12">
                             <div class="form-group">
                                 <label for="">{{__('admin.question')}}</label>
-                                <input type="text" class="form-control form-control-sm" name="question" id="name"
-                                    value="{{ old('question') }}">
+                                <input type="text" class="form-control form-control-sm" name="question" id="name" value="{{ old('question') }}">
 
                             </div>
                             @error('question')
@@ -54,8 +53,7 @@
                         <section class="col-12">
                             <div class="form-group">
                                 <label for="">{{__('admin.answer')}}</label>
-                                <textarea name="answer" id="answer" class="form-control form-control-sm"
-                                    rows="6">{{ old('answer') }}</textarea>
+                                <textarea name="answer" id="answer" class="form-control form-control-sm" rows="6">{{ old('answer') }}</textarea>
                             </div>
                             @error('answer')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -69,8 +67,7 @@
                         <section class="col-12">
                             <div class="form-group">
                                 <label for="tags">{{__('admin.tags')}}</label>
-                                <input type="hidden" class="form-control form-control-sm" name="tags" id="tags"
-                                    value="{{ old('tags') }}">
+                                <input type="hidden" class="form-control form-control-sm" name="tags" id="tags" value="{{ old('tags') }}">
                                 <select class="select2 form-control form-control-sm" id="select_tags" multiple>
 
                                 </select>
@@ -119,36 +116,36 @@
 
 <script src="{{ asset('admin-assets/ckeditor/ckeditor.js') }}"></script>
 <script>
-CKEDITOR.replace('answer');
+    ClassicEditor.create(document.querySelector('#answer'), {});
 </script>
 
 
 <script>
-$(document).ready(function() {
-    var tags_input = $('#tags');
-    var select_tags = $('#select_tags');
-    var default_tags = tags_input.val();
-    var default_data = null;
+    $(document).ready(function() {
+        var tags_input = $('#tags');
+        var select_tags = $('#select_tags');
+        var default_tags = tags_input.val();
+        var default_data = null;
 
-    if (tags_input.val() !== null && tags_input.val().length > 0) {
-        default_data = default_tags.split(',');
-    }
-
-    select_tags.select2({
-        placeholder: "{{__('admin.please choose your tags')}}",
-        tags: true,
-        data: default_data
-    });
-    select_tags.children('option').attr('selected', true).trigger('change');
-
-
-    $('#form').submit(function(event) {
-        if (select_tags.val() !== null && select_tags.val().length > 0) {
-            var selectedSource = select_tags.val().join(',');
-            tags_input.val(selectedSource)
+        if (tags_input.val() !== null && tags_input.val().length > 0) {
+            default_data = default_tags.split(',');
         }
+
+        select_tags.select2({
+            placeholder: "{{__('admin.please choose your tags')}}",
+            tags: true,
+            data: default_data
+        });
+        select_tags.children('option').attr('selected', true).trigger('change');
+
+
+        $('#form').submit(function(event) {
+            if (select_tags.val() !== null && select_tags.val().length > 0) {
+                var selectedSource = select_tags.val().join(',');
+                tags_input.val(selectedSource)
+            }
+        })
     })
-})
 </script>
 
 @endsection

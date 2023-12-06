@@ -23,18 +23,16 @@
         <section class="main-body-container">
             <section class="main-body-container-header">
                 <h5>
-                {{__('admin.edit email file')}}
+                    {{__('admin.edit email file')}}
                 </h5>
             </section>
 
             <section class="d-flex justify-content-between align-items-center mt-4 mb-3 border-bottom pb-2">
-                <a href="{{ route('admin.notify.email-files.index', $file->email->id) }}"
-                    class="btn btn-info btn-sm">{{__('admin.return')}}</a>
+                <a href="{{ route('admin.notify.email-files.index', $file->email->id) }}" class="btn btn-info btn-sm">{{__('admin.return')}}</a>
             </section>
 
             <section>
-                <form action="{{ route('admin.notify.email-files.update', $file->id) }}" method="post"
-                    enctype="multipart/form-data">
+                <form action="{{ route('admin.notify.email-files.update', $file->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <section class="row">
@@ -89,24 +87,24 @@
 
 <script src="{{ asset('admin-assets/ckeditor/ckeditor.js') }}"></script>
 <script>
-CKEDITOR.replace('body');
+    ClassicEditor.create(document.querySelector('#body'), {});
 </script>
 
 <script src="{{ asset('admin-assets/jalalidatepicker/persian-date.min.js') }}"></script>
 <script src="{{ asset('admin-assets/jalalidatepicker/persian-datepicker.min.js') }}"></script>
 <script>
-$(document).ready(function() {
-    $('#published_at_view').persianDatepicker({
-        format: 'YYYY/MM/DD',
-        altField: '#published_at',
-        timePicker: {
-            enabled: true,
-            meridiem: {
-                enabled: true
+    $(document).ready(function() {
+        $('#published_at_view').persianDatepicker({
+            format: 'YYYY/MM/DD',
+            altField: '#published_at',
+            timePicker: {
+                enabled: true,
+                meridiem: {
+                    enabled: true
+                }
             }
-        }
-    })
-});
+        })
+    });
 </script>
 
 

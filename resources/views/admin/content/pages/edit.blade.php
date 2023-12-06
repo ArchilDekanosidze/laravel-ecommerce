@@ -21,7 +21,7 @@
         <section class="main-body-container">
             <section class="main-body-container-header">
                 <h5>
-                {{__('admin.edit page')}}
+                    {{__('admin.edit page')}}
                 </h5>
             </section>
 
@@ -39,8 +39,7 @@
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="">{{__('admin.page title')}}</label>
-                                <input type="text" name="title" value="{{ old('title', $page->title) }}"
-                                    class="form-control form-control-sm">
+                                <input type="text" name="title" value="{{ old('title', $page->title) }}" class="form-control form-control-sm">
                             </div>
                             @error('title')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -55,8 +54,7 @@
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="tags">{{__('admin.tags')}}</label>
-                                <input type="hidden" class="form-control form-control-sm" name="tags" id="tags"
-                                    value="{{ old('tags', $page->tags) }}">
+                                <input type="hidden" class="form-control form-control-sm" name="tags" id="tags" value="{{ old('tags', $page->tags) }}">
                                 <select class="select2 form-control form-control-sm" id="select_tags" multiple>
 
                                 </select>
@@ -92,8 +90,7 @@
                         <section class="col-12">
                             <div class="form-group">
                                 <label for="">{{__('admin.content')}}</label>
-                                <textarea name="body" id="body" class="form-control form-control-sm"
-                                    rows="6">{{ old('body', $page->body) }}</textarea>
+                                <textarea name="body" id="body" class="form-control form-control-sm" rows="6">{{ old('body', $page->body) }}</textarea>
                             </div>
                             @error('body')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -120,35 +117,35 @@
 
 <script src="{{ asset('admin-assets/ckeditor/ckeditor.js') }}"></script>
 <script>
-CKEDITOR.replace('body');
+    ClassicEditor.create(document.querySelector('#body'), {});
 </script>
 
 <script>
-$(document).ready(function() {
-    var tags_input = $('#tags');
-    var select_tags = $('#select_tags');
-    var default_tags = tags_input.val();
-    var default_data = null;
+    $(document).ready(function() {
+        var tags_input = $('#tags');
+        var select_tags = $('#select_tags');
+        var default_tags = tags_input.val();
+        var default_data = null;
 
-    if (tags_input.val() !== null && tags_input.val().length > 0) {
-        default_data = default_tags.split(',');
-    }
-
-    select_tags.select2({
-        placeholder: "{{__('admin.please choose your tags')}}",
-        tags: true,
-        data: default_data
-    });
-    select_tags.children('option').attr('selected', true).trigger('change');
-
-
-    $('#form').submit(function(event) {
-        if (select_tags.val() !== null && select_tags.val().length > 0) {
-            var selectedSource = select_tags.val().join(',');
-            tags_input.val(selectedSource)
+        if (tags_input.val() !== null && tags_input.val().length > 0) {
+            default_data = default_tags.split(',');
         }
+
+        select_tags.select2({
+            placeholder: "{{__('admin.please choose your tags')}}",
+            tags: true,
+            data: default_data
+        });
+        select_tags.children('option').attr('selected', true).trigger('change');
+
+
+        $('#form').submit(function(event) {
+            if (select_tags.val() !== null && select_tags.val().length > 0) {
+                var selectedSource = select_tags.val().join(',');
+                tags_input.val(selectedSource)
+            }
+        })
     })
-})
 </script>
 
 @endsection

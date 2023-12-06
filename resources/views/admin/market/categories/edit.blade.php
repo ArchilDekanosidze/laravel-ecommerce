@@ -202,7 +202,7 @@
 
 <script src="{{ asset('admin-assets/ckeditor/ckeditor.js') }}"></script>
 <script>
-    CKEDITOR.replace('description');
+    ClassicEditor.create(document.querySelector('#description'), {});
 </script>
 
 <script>

@@ -22,7 +22,7 @@
         <section class="main-body-container">
             <section class="main-body-container-header">
                 <h5>
-                {{__('admin.create product')}}
+                    {{__('admin.create product')}}
                 </h5>
             </section>
 
@@ -31,16 +31,14 @@
             </section>
 
             <section>
-                <form action="{{ route('admin.market.products.store') }}" method="post" enctype="multipart/form-data"
-                    id="form">
+                <form action="{{ route('admin.market.products.store') }}" method="post" enctype="multipart/form-data" id="form">
                     @csrf
                     <section class="row">
 
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="">{{__('admin.product name')}}</label>
-                                <input type="text" name="name" value="{{ old('name') }}"
-                                    class="form-control form-control-sm">
+                                <input type="text" name="name" value="{{ old('name') }}" class="form-control form-control-sm">
                             </div>
                             @error('name')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -58,8 +56,7 @@
                                 <select name="category_id" id="" class="form-control form-control-sm">
                                     <option value="">{{__('admin.choose category')}}</option>
                                     @foreach ($productCategories as $productCategory)
-                                    <option value="{{ $productCategory->id }}"
-                                        @if(old('category_id')==$productCategory->id) selected
+                                    <option value="{{ $productCategory->id }}" @if(old('category_id')==$productCategory->id) selected
                                         @endif>{{ $productCategory->name }}</option>
                                     @endforeach
 
@@ -116,8 +113,7 @@
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="">{{__('admin.weight')}}</label>
-                                <input type="text" name="weight" value="{{ old('weight') }}"
-                                    class="form-control form-control-sm">
+                                <input type="text" name="weight" value="{{ old('weight') }}" class="form-control form-control-sm">
                             </div>
                             @error('weight')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -131,8 +127,7 @@
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="">{{__('admin.length')}}</label>
-                                <input type="text" name="length" value="{{ old('length') }}"
-                                    class="form-control form-control-sm">
+                                <input type="text" name="length" value="{{ old('length') }}" class="form-control form-control-sm">
                             </div>
                             @error('length')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -146,8 +141,7 @@
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="">{{__('admin.width')}}</label>
-                                <input type="text" name="width" value="{{ old('width') }}"
-                                    class="form-control form-control-sm">
+                                <input type="text" name="width" value="{{ old('width') }}" class="form-control form-control-sm">
                             </div>
                             @error('width')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -161,8 +155,7 @@
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="">{{__('admin.height')}}</label>
-                                <input type="text" name="height" value="{{ old('height') }}"
-                                    class="form-control form-control-sm">
+                                <input type="text" name="height" value="{{ old('height') }}" class="form-control form-control-sm">
                             </div>
                             @error('height')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -176,8 +169,7 @@
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="">{{__('admin.product price')}}</label>
-                                <input type="text" name="price" value="{{ old('price') }}"
-                                    class="form-control form-control-sm">
+                                <input type="text" name="price" value="{{ old('price') }}" class="form-control form-control-sm">
                             </div>
                             @error('price')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -191,8 +183,7 @@
                         <section class="col-12">
                             <div class="form-group">
                                 <label for="">{{__('admin.description')}}</label>
-                                <textarea name="introduction" id="introduction" name="introduction"
-                                    class="form-control form-control-sm" rows="6">{{ old('introduction') }}</textarea>
+                                <textarea name="introduction" id="introduction" name="introduction" class="form-control form-control-sm" rows="6">{{ old('introduction') }}</textarea>
                             </div>
                             @error('introduction')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -206,8 +197,7 @@
                         <section class="col-12 col-md-6 my-2">
                             <div class="form-group">
                                 <label for="tags">{{__('admin.tags')}}</label>
-                                <input type="hidden" class="form-control form-control-sm" name="tags" id="tags"
-                                    value="{{ old('tags') }}">
+                                <input type="hidden" class="form-control form-control-sm" name="tags" id="tags" value="{{ old('tags') }}">
                                 <select class="select2 form-control form-control-sm" id="select_tags" multiple>
 
                                 </select>
@@ -261,8 +251,7 @@
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="">{{__('admin.publish date')}}</label>
-                                <input type="text" name="published_at" id="published_at"
-                                    class="form-control form-control-sm d-none">
+                                <input type="text" name="published_at" id="published_at" class="form-control form-control-sm d-none">
                                 <input type="text" id="published_at_view" class="form-control form-control-sm">
                             </div>
                             @error('published_at')
@@ -283,8 +272,7 @@
 
                                 <section class="col-6 col-md-3">
                                     <div class="form-group">
-                                        <input type="text" name="meta_key[]" class="form-control form-control-sm"
-                                            placeholder="{{__('admin.feature')}} ...">
+                                        <input type="text" name="meta_key[]" class="form-control form-control-sm" placeholder="{{__('admin.feature')}} ...">
                                     </div>
                                     @error('meta_key.*')
                                     <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -297,8 +285,7 @@
 
                                 <section class="col-6 col-md-3">
                                     <div class="form-group">
-                                        <input type="text" name="meta_value[]" class="form-control form-control-sm"
-                                            placeholder="{{__('admin.value')}} ...">
+                                        <input type="text" name="meta_value[]" class="form-control form-control-sm" placeholder="{{__('admin.value')}} ...">
                                     </div>
                                     @error('meta_value.*')
                                     <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -338,53 +325,53 @@
 <script src="{{ asset('admin-assets/jalalidatepicker/persian-date.min.js') }}"></script>
 <script src="{{ asset('admin-assets/jalalidatepicker/persian-datepicker.min.js') }}"></script>
 <script>
-CKEDITOR.replace('introduction');
+    ClassicEditor.create(document.querySelector('#introduction'), {});
 </script>
 
 <script>
-$(document).ready(function() {
-    $('#published_at_view').persianDatepicker({
-        format: 'YYYY/MM/DD',
-        altField: '#published_at'
-    })
-});
-</script>
-
-<script>
-$(document).ready(function() {
-    var tags_input = $('#tags');
-    var select_tags = $('#select_tags');
-    var default_tags = tags_input.val();
-    var default_data = null;
-
-    if (tags_input.val() !== null && tags_input.val().length > 0) {
-        default_data = default_tags.split(',');
-    }
-
-    select_tags.select2({
-        placeholder: "{{__('admin.please choose your tags')}}",
-        tags: true,
-        data: default_data
+    $(document).ready(function() {
+        $('#published_at_view').persianDatepicker({
+            format: 'YYYY/MM/DD',
+            altField: '#published_at'
+        })
     });
-    select_tags.children('option').attr('selected', true).trigger('change');
-
-
-    $('#form').submit(function(event) {
-        if (select_tags.val() !== null && select_tags.val().length > 0) {
-            var selectedSource = select_tags.val().join(',');
-            tags_input.val(selectedSource)
-        }
-    })
-})
 </script>
 
 <script>
-$(function() {
-    $("#btn-copy").on('click', function() {
-        var ele = $(this).parent().prev().clone(true);
-        $(this).before(ele);
+    $(document).ready(function() {
+        var tags_input = $('#tags');
+        var select_tags = $('#select_tags');
+        var default_tags = tags_input.val();
+        var default_data = null;
+
+        if (tags_input.val() !== null && tags_input.val().length > 0) {
+            default_data = default_tags.split(',');
+        }
+
+        select_tags.select2({
+            placeholder: "{{__('admin.please choose your tags')}}",
+            tags: true,
+            data: default_data
+        });
+        select_tags.children('option').attr('selected', true).trigger('change');
+
+
+        $('#form').submit(function(event) {
+            if (select_tags.val() !== null && select_tags.val().length > 0) {
+                var selectedSource = select_tags.val().join(',');
+                tags_input.val(selectedSource)
+            }
+        })
     })
-})
+</script>
+
+<script>
+    $(function() {
+        $("#btn-copy").on('click', function() {
+            var ele = $(this).parent().prev().clone(true);
+            $(this).before(ele);
+        })
+    })
 </script>
 
 @endsection

@@ -22,7 +22,7 @@
         <section class="main-body-container">
             <section class="main-body-container-header">
                 <h5>
-                {{__('admin.create color for product')}}
+                    {{__('admin.create color for product')}}
                 </h5>
             </section>
 
@@ -39,8 +39,7 @@
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="color_name">{{__('admin.color name')}}</label>
-                                <input type="text" name="color_name" value="{{ old('color_name') }}"
-                                    class="form-control form-control-sm">
+                                <input type="text" name="color_name" value="{{ old('color_name') }}" class="form-control form-control-sm">
                             </div>
                             @error('color_name')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -54,8 +53,7 @@
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="color">{{__('admin.color')}}</label>
-                                <input type="color" name="color" value="{{ old('color') }}"
-                                    class="form-control form-control-sm form-control-color">
+                                <input type="color" name="color" value="{{ old('color') }}" class="form-control form-control-sm form-control-color">
                             </div>
                             @error('color')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -69,8 +67,7 @@
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="price_increase">{{__('admin.price increase')}}</label>
-                                <input type="text" name="price_increase" value="{{ old('price_increase') }}"
-                                    class="form-control form-control-sm">
+                                <input type="text" name="price_increase" value="{{ old('price_increase') }}" class="form-control form-control-sm">
                             </div>
                             @error('price_increase')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -105,53 +102,53 @@
 <script src="{{ asset('admin-assets/jalalidatepicker/persian-date.min.js') }}"></script>
 <script src="{{ asset('admin-assets/jalalidatepicker/persian-datepicker.min.js') }}"></script>
 <script>
-CKEDITOR.replace('introduction');
+    ClassicEditor.create(document.querySelector('#introduction'), {});
 </script>
 
 <script>
-$(document).ready(function() {
-    $('#published_at_view').persianDatepicker({
-        format: 'YYYY/MM/DD',
-        altField: '#published_at'
-    })
-});
-</script>
-
-<script>
-$(document).ready(function() {
-    var tags_input = $('#tags');
-    var select_tags = $('#select_tags');
-    var default_tags = tags_input.val();
-    var default_data = null;
-
-    if (tags_input.val() !== null && tags_input.val().length > 0) {
-        default_data = default_tags.split(',');
-    }
-
-    select_tags.select2({
-        placeholder: 'لطفا تگ های خود را وارد نمایید',
-        tags: true,
-        data: default_data
+    $(document).ready(function() {
+        $('#published_at_view').persianDatepicker({
+            format: 'YYYY/MM/DD',
+            altField: '#published_at'
+        })
     });
-    select_tags.children('option').attr('selected', true).trigger('change');
-
-
-    $('#form').submit(function(event) {
-        if (select_tags.val() !== null && select_tags.val().length > 0) {
-            var selectedSource = select_tags.val().join(',');
-            tags_input.val(selectedSource)
-        }
-    })
-})
 </script>
 
 <script>
-$(function() {
-    $("#btn-copy").on('click', function() {
-        var ele = $(this).parent().prev().clone(true);
-        $(this).before(ele);
+    $(document).ready(function() {
+        var tags_input = $('#tags');
+        var select_tags = $('#select_tags');
+        var default_tags = tags_input.val();
+        var default_data = null;
+
+        if (tags_input.val() !== null && tags_input.val().length > 0) {
+            default_data = default_tags.split(',');
+        }
+
+        select_tags.select2({
+            placeholder: 'لطفا تگ های خود را وارد نمایید',
+            tags: true,
+            data: default_data
+        });
+        select_tags.children('option').attr('selected', true).trigger('change');
+
+
+        $('#form').submit(function(event) {
+            if (select_tags.val() !== null && select_tags.val().length > 0) {
+                var selectedSource = select_tags.val().join(',');
+                tags_input.val(selectedSource)
+            }
+        })
     })
-})
+</script>
+
+<script>
+    $(function() {
+        $("#btn-copy").on('click', function() {
+            var ele = $(this).parent().prev().clone(true);
+            $(this).before(ele);
+        })
+    })
 </script>
 
 @endsection

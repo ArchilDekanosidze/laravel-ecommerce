@@ -22,7 +22,7 @@
         <section class="main-body-container">
             <section class="main-body-container-header">
                 <h5>
-                {{__('admin.create banner')}}
+                    {{__('admin.create banner')}}
                 </h5>
             </section>
 
@@ -31,16 +31,14 @@
             </section>
 
             <section>
-                <form action="{{ route('admin.content.banners.store') }}" method="POST" enctype="multipart/form-data"
-                    id="form">
+                <form action="{{ route('admin.content.banners.store') }}" method="POST" enctype="multipart/form-data" id="form">
                     @csrf
                     <section class="row">
 
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="">{{__('admin.banner name')}}</label>
-                                <input type="text" class="form-control form-control-sm" name="title"
-                                    value="{{ old('title') }}">
+                                <input type="text" class="form-control form-control-sm" name="title" value="{{ old('title') }}">
                             </div>
                             @error('title')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -87,8 +85,7 @@
                         <section class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="">{{__('admin.URL address')}}</label>
-                                <input type="text" name="url" value="{{ old('url') }}"
-                                    class="form-control form-control-sm">
+                                <input type="text" name="url" value="{{ old('url') }}" class="form-control form-control-sm">
                             </div>
                             @error('url')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
@@ -142,45 +139,45 @@
 <script src="{{ asset('admin-assets/jalalidatepicker/persian-date.min.js') }}"></script>
 <script src="{{ asset('admin-assets/jalalidatepicker/persian-datepicker.min.js') }}"></script>
 <script>
-CKEDITOR.replace('body');
-CKEDITOR.replace('summary');
+    ClassicEditor.create(document.querySelector('#body'), {});
+    ClassicEditor.create(document.querySelector('#summary'), {});
 </script>
 
 <script>
-$(document).ready(function() {
-    $('#published_at_view').persianDatepicker({
-        format: 'YYYY/MM/DD',
-        altField: '#published_at'
-    })
-});
-</script>
-
-<script>
-$(document).ready(function() {
-    var tags_input = $('#tags');
-    var select_tags = $('#select_tags');
-    var default_tags = tags_input.val();
-    var default_data = null;
-
-    if (tags_input.val() !== null && tags_input.val().length > 0) {
-        default_data = default_tags.split(',');
-    }
-
-    select_tags.select2({
-        placeholder: "{{__('admin.please choose your tags')}}",
-        tags: true,
-        data: default_data
+    $(document).ready(function() {
+        $('#published_at_view').persianDatepicker({
+            format: 'YYYY/MM/DD',
+            altField: '#published_at'
+        })
     });
-    select_tags.children('option').attr('selected', true).trigger('change');
+</script>
 
+<script>
+    $(document).ready(function() {
+        var tags_input = $('#tags');
+        var select_tags = $('#select_tags');
+        var default_tags = tags_input.val();
+        var default_data = null;
 
-    $('#form').submit(function(event) {
-        if (select_tags.val() !== null && select_tags.val().length > 0) {
-            var selectedSource = select_tags.val().join(',');
-            tags_input.val(selectedSource)
+        if (tags_input.val() !== null && tags_input.val().length > 0) {
+            default_data = default_tags.split(',');
         }
+
+        select_tags.select2({
+            placeholder: "{{__('admin.please choose your tags')}}",
+            tags: true,
+            data: default_data
+        });
+        select_tags.children('option').attr('selected', true).trigger('change');
+
+
+        $('#form').submit(function(event) {
+            if (select_tags.val() !== null && select_tags.val().length > 0) {
+                var selectedSource = select_tags.val().join(',');
+                tags_input.val(selectedSource)
+            }
+        })
     })
-})
 </script>
 
 @endsection
