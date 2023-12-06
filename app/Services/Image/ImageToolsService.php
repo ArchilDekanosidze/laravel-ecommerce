@@ -4,7 +4,13 @@ namespace App\Services\Image;
 
 class ImageToolsService
 {
-
+    protected $image;
+    protected $exclusiveDirectory;
+    protected $imageDirectory;
+    protected $imageName;
+    protected $imageFormat;
+    protected $finalImageDirectory;
+    protected $finalImageName;
 
     public function setImage($image)
     {

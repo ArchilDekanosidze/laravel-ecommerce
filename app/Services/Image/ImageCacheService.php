@@ -13,8 +13,7 @@ class ImageCacheService
     {
         //set image size
         $imageSizes = Config::get('image.cache-image-sizes');
-        if(!isset($imageSizes[$size]))
-        {
+        if (!isset($imageSizes[$size])) {
             $size = Config::get('image.default-current-cache-image');
         }
         $width = $imageSizes[$size]['width'];
@@ -22,15 +21,13 @@ class ImageCacheService
 
 
         //cache image
-        if(file_exists($imagePath))
-        {
-            $img = Image::cache(function($image) use ($imagePath, $width, $height) {
+        if (file_exists($imagePath)) {
+            $img = Image::cache(function ($image) use ($imagePath, $width, $height) {
                 return $image->make($imagePath)->fit($width, $height);
             }, Config::get('image-cache-life-time'), true);
             return $img->response();
-        }
-        else{
-            $img = Image::canvas($width, $height, '#cdcdcd')->text('image not found - 404', $width / 2, $height / 2, function($font){
+        } else {
+            $img = Image::canvas($width, $height, '#cdcdcd')->text('image not found - 404', $width / 2, $height / 2, function ($font) {
 
                 $font->color('#333333');
                 $font->align('center');
@@ -40,10 +37,5 @@ class ImageCacheService
             });
             return $img->response();
         }
-
-
-
-
     }
-
 }
