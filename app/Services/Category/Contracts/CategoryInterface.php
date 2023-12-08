@@ -10,6 +10,8 @@ interface CategoryInterface
 {
     const UPLOAD_IMAGE_FAILED = 'upload.image.failed';
     const SUCCESS = 'success';
+    const FAILED = 'failed';
+
 
     public function __construct(ImageServiceInterface $imageService, Request $request);
     public function simplePaginate();

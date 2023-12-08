@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\Admin\Market;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\Image\ImageService;
 use App\Models\Market\ProductCategory;
-use App\Services\Category\CategoryService;
-use App\Http\Requests\Admin\Market\ProductCategoryRequest;
+use App\Services\Category\Contracts\CategoryInterface;
+use App\Http\Requests\Admin\Market\ProductCategoryStoreRequest;
+use App\Http\Requests\Admin\Market\ProductCategoryUpdateRequest;
 
 class CategoryController extends Controller
 {
     private $productCategoryService;
-    public function __construct(CategoryService $productCategoryService)
+    public function __construct(CategoryInterface $productCategoryService)
     {
         $this->productCategoryService = $productCategoryService;
     }
@@ -37,7 +36,7 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProductCategoryRequest $request)
+    public function store(ProductCategoryStoreRequest $request)
     {
         return $this->productCategoryService->store() === $this->productCategoryService::SUCCESS ?
             redirect()->route('admin.market.categories.index')
@@ -66,7 +65,7 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ProductCategoryRequest $request, ProductCategory $productCategory)
+    public function update(ProductCategoryUpdateRequest $request, ProductCategory $productCategory)
     {
         return $this->productCategoryService->update($productCategory) === $this->productCategoryService::SUCCESS ?
             redirect()->route('admin.market.categories.index')

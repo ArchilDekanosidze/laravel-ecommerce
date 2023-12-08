@@ -9,7 +9,9 @@ use App\Models\Market\CartItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use App\Services\Uploader\StorageManager;
+use App\Services\Category\CategoryService;
 use Illuminate\Contracts\Foundation\Application;
+use App\Services\Category\Contracts\CategoryInterface;
 use App\Services\Uploader\Image\ImageInterventionService;
 use App\Services\Notification\Sms\Providers\FarazSms\FarazSms;
 use App\Services\Notification\Sms\Contracts\SmsSenderInterface;
@@ -43,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(SmsSenderInterface::class, FarazSms::class);
+        $this->app->bind(CategoryInterface::class, CategoryService::class);
         $this->app->bind(ImageServiceInterface::class, ImageInterventionService::class);
 
 
